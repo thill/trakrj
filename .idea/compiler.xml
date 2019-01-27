@@ -9,8 +9,5 @@
         <module name="trakrj" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="trakrj" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>
