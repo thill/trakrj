@@ -15,11 +15,16 @@
  */
 package io.thill.trakrj.internal.conductor;
 
+import org.junit.Test;
+
 /**
  * @author Eric Thill
  */
 public class TestRingBufferConductor {
 
-  // FIXME implement
+  @Test
+  public void test() {
+    // FIXME implement
+  }
 
 }

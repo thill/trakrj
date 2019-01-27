@@ -15,11 +15,16 @@
  */
 package io.thill.trakrj;
 
+import org.junit.Test;
+
 /**
  * @author Eric Thill
  */
 public class TestStatsApi {
 
-  // FIXME implement
+  @Test
+  public void test() {
+    // FIXME implement
+  }
   
 }
