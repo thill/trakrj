@@ -4,7 +4,7 @@
 
     <groupId>io.thill.trakrj</groupId>
     <artifactId>trakrj</artifactId>
-    <version>0.9.3-SNAPSHOT</version>
+    <version>0.9.4-SNAPSHOT</version>
 
     <name>TrakrJ</name>
     <description>A high-throughput, low-latency, statistic tracking framework for Java applications</description>
