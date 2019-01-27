@@ -21,6 +21,12 @@ Stats.record(id, 123L);
 Thread.sleep(TimeUnit.HOURS.toMillis(1));
 ```
 
+Output:
+```
+Sun Jan 27 15:32:05 CST 2019 - TrakrJ - My Value - 123
+Sun Jan 27 15:32:10 CST 2019 - TrakrJ - My Value - 123
+```
+
 #### Histogram Quick Start
 Run using `-Dtrakrj.enabled`:
 ```
