@@ -80,6 +80,7 @@ Add trakrj.properties to the classpath or working directory. The following sampl
 conductor.impl=default          # default, disabled, or a fully-qualified custom Conductor class
 conductor.ringbuffer.size=4096  # the number of statistics that can be queued before stats are dropped due to back-pressure
 logger.impl=stderr              # stderr, stdout, slf4j, or a fully-qualified custom Conductor class
+logger.name=TrakrJ              # name to be used by the underlying logger implementation
 config.print=false              # setting to true will write this config to stderr on startup
 ```
 You may use a custom config location by setting the following property:
