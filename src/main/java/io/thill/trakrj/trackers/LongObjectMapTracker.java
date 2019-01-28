@@ -17,6 +17,7 @@ package io.thill.trakrj.trackers;
 
 import io.thill.trakrj.Record;
 import io.thill.trakrj.Tracker;
+import io.thill.trakrj.function.LongObjectConsumer;
 import org.eclipse.collections.api.map.primitive.MutableLongObjectMap;
 import org.eclipse.collections.impl.factory.primitive.LongObjectMaps;
 
@@ -50,12 +51,8 @@ public class LongObjectMapTracker implements Tracker {
 	 *
 	 * @param c The consumer to accept all values in the map
 	 */
-	public void forEach(Consumer c) {
+	public void forEach(LongObjectConsumer<Object> c) {
 		map.forEachKeyValue((long k, Object v) -> c.accept(k, v));
 	}
 
-	@FunctionalInterface
-	public interface Consumer {
-		void accept(long key, Object value);
-	}
 }

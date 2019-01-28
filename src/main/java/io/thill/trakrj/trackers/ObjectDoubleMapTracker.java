@@ -17,6 +17,7 @@ package io.thill.trakrj.trackers;
 
 import io.thill.trakrj.Record;
 import io.thill.trakrj.Tracker;
+import io.thill.trakrj.function.ObjectDoubleConsumer;
 import org.eclipse.collections.api.map.primitive.MutableObjectDoubleMap;
 import org.eclipse.collections.impl.factory.primitive.ObjectDoubleMaps;
 
@@ -50,12 +51,8 @@ public class ObjectDoubleMapTracker implements Tracker {
 	 *
 	 * @param c The consumer to accept all values in the map
 	 */
-	public void forEach(Consumer c) {
+	public void forEach(ObjectDoubleConsumer<Object> c) {
 		map.forEachKeyValue((Object k, double v) -> c.accept(k, v));
 	}
 
-	@FunctionalInterface
-	public interface Consumer {
-		void accept(Object key, double value);
-	}
 }

@@ -17,6 +17,7 @@ package io.thill.trakrj.trackers;
 
 import io.thill.trakrj.Record;
 import io.thill.trakrj.Tracker;
+import io.thill.trakrj.function.ObjectObjectConsumer;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -51,12 +52,8 @@ public class ObjectObjectMapTracker implements Tracker {
    *
    * @param c The consumer to accept all values in the map
    */
-  public void forEach(Consumer c) {
+  public void forEach(ObjectObjectConsumer<Object, Object> c) {
     map.forEach((Object key, Object value) -> c.accept(key, value));
   }
 
-  @FunctionalInterface
-  public interface Consumer {
-    void accept(Object key, Object value);
-  }
 }

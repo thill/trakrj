@@ -13,46 +13,12 @@
  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.thill.trakrj.trackers;
-
-import io.thill.trakrj.Record;
-import io.thill.trakrj.Tracker;
-import io.thill.trakrj.function.ObjectLongConsumer;
-import org.eclipse.collections.api.map.primitive.MutableObjectLongMap;
-import org.eclipse.collections.impl.factory.primitive.ObjectLongMaps;
+package io.thill.trakrj.function;
 
 /**
- * Tracker to keep Object:long values in a map. Reset clears the map.
- *
  * @author Eric Thill
  */
-public class ObjectLongMapTracker implements Tracker {
-
-	private final MutableObjectLongMap<Object> map = ObjectLongMaps.mutable.empty();
-
-	@Override
-	public void record(Record record) {
-		map.put(record.getKeyObject(), record.getValueLong());
-	}
-
-	@Override
-	public void reset() {
-		map.clear();
-	}
-
-	@Override
-	public String toString() {
-		return map.toString();
-	}
-
-	/**
-	 * Iterate over all elements in the underlying map. The purpose of providing access to the underlying map as a function is to not expose the underlying data
-	 * structure types as part of the API.
-	 *
-	 * @param c The consumer to accept all values in the map
-	 */
-	public void forEach(ObjectLongConsumer<Object> c) {
-		map.forEachKeyValue((Object k, long v) -> c.accept(k, v));
-	}
-
+@FunctionalInterface
+public interface DoubleDoubleConsumer {
+  void accept(double v1, double v2);
 }

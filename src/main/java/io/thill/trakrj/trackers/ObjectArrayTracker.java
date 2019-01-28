@@ -17,6 +17,7 @@ package io.thill.trakrj.trackers;
 
 import io.thill.trakrj.Record;
 import io.thill.trakrj.Tracker;
+import io.thill.trakrj.function.IntObjectConsumer;
 
 import java.util.Arrays;
 
@@ -63,15 +64,10 @@ public class ObjectArrayTracker implements Tracker {
    *
    * @param c The consumer to accept all values in the array
    */
-  public void forEach(Consumer c) {
+  public void forEach(IntObjectConsumer<Object> c) {
     for(int i = 0; i < array.length; i++) {
       c.accept(i, array[i]);
     }
-  }
-
-  @FunctionalInterface
-  public interface Consumer {
-    void accept(int index, Object element);
   }
 
 }

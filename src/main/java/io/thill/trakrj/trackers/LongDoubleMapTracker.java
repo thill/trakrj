@@ -17,6 +17,7 @@ package io.thill.trakrj.trackers;
 
 import io.thill.trakrj.Record;
 import io.thill.trakrj.Tracker;
+import io.thill.trakrj.function.LongDoubleConsumer;
 import org.eclipse.collections.api.map.primitive.MutableLongDoubleMap;
 import org.eclipse.collections.impl.factory.primitive.LongDoubleMaps;
 
@@ -50,12 +51,8 @@ public class LongDoubleMapTracker implements Tracker {
 	 *
 	 * @param c The consumer to accept all values in the map
 	 */
-	public void forEach(Consumer c) {
+	public void forEach(LongDoubleConsumer c) {
 		map.forEachKeyValue((long k, double v) -> c.accept(k, v));
 	}
 
-	@FunctionalInterface
-	public interface Consumer {
-		void accept(long key, double value);
-	}
 }
