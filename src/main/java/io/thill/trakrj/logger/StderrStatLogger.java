@@ -21,18 +21,23 @@ import io.thill.trakrj.TrackerId;
 import java.util.Date;
 import java.util.Map;
 
+import static io.thill.trakrj.internal.load.Config.*;
+
 /**
  * @author Eric Thill
  */
 public class StderrStatLogger implements StatLogger {
+
+  private String loggerName = DEFAULT_LOGGER_NAME;
+
   @Override
   public void configure(Map<String, String> config) {
-
+    loggerName = config.getOrDefault(CFGKEY_LOGGER_NAME, DEFAULT_LOGGER_NAME);
   }
 
   @Override
   public void log(TrackerId id, Tracker tracker) {
-    System.err.println(new Date() + " - TrakrJ - " + id.display() + " - " + tracker.toString());
+    System.err.println(new Date() + " - " + loggerName + " - " + id.display() + " - " + tracker.toString());
   }
 
 }

@@ -1,3 +1,0 @@
-conductor.impl=default
-logger.impl=slf4j
-config.print=true

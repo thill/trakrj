@@ -33,11 +33,13 @@ import java.util.*;
 public class Config {
 
   public static final String SYSKEY_ENABLED = "trakrj.enabled";
+  public static final String DEFAULT_ENABLED = "false";
+
   public static final String SYSKEY_CONFIG = "trakrj.config";
+  public static final String DEFAULT_CONFIG = "trakrj.properties";
+
   public static final String SYSKEY_PRINT_CONFIG = "trakrj.config.print";
   public static final String CFGKEY_PRINT_CONFIG = "config.print";
-  public static final String DEFAULT_ENABLED = "false";
-  public static final String DEFAULT_CONFIG = "trakrj.config";
 
   public static final String CFGPREFIX_CONDUCTOR = "conductor.";
   public static final String CFGPREFIX_LOGGER = "logger.";
@@ -56,6 +58,9 @@ public class Config {
   public static final String LOGGER_IMPL_SLF4J = "slf4j";
   public static final String LOGGER_IMPL_STDOUT = "stdout";
   public static final String LOGGER_IMPL_STDERR = "stderr";
+
+  public static final String CFGKEY_LOGGER_NAME = "name";
+  public static final String DEFAULT_LOGGER_NAME = "TrakrJ";
 
   public static Map<String, String> loadConfig() throws IOException {
     String configUrl = System.getProperty(SYSKEY_CONFIG, DEFAULT_CONFIG);
@@ -138,6 +143,6 @@ public class Config {
         }
       }
     }
-    return Collections.unmodifiableMap(config);
+    return Collections.unmodifiableMap(sub);
   }
 }

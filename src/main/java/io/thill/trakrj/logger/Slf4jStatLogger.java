@@ -22,16 +22,19 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
+import static io.thill.trakrj.internal.load.Config.*;
+
 /**
  * @author Eric Thill
  */
 public class Slf4jStatLogger implements StatLogger {
 
-  private final Logger logger = LoggerFactory.getLogger("TrakrJ");
+  private Logger logger = LoggerFactory.getLogger(DEFAULT_LOGGER_NAME);
 
   @Override
   public void configure(Map<String, String> config) {
-
+    String loggerName = config.getOrDefault(CFGKEY_LOGGER_NAME, DEFAULT_LOGGER_NAME);
+    logger = LoggerFactory.getLogger(loggerName);
   }
 
   @Override
