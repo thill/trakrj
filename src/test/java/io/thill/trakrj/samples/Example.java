@@ -18,6 +18,7 @@ package io.thill.trakrj.samples;
 import io.thill.trakrj.Intervals;
 import io.thill.trakrj.Stats;
 import io.thill.trakrj.TrackerId;
+import io.thill.trakrj.TrakrJ;
 import io.thill.trakrj.trackers.AggregateLongTracker;
 import io.thill.trakrj.trackers.HistogramTracker;
 import io.thill.trakrj.trackers.LastLongTracker;
@@ -30,19 +31,19 @@ import java.util.concurrent.TimeUnit;
  */
 public class Example {
   public static void main(String[] args) throws Exception {
-    Stats.register(ID.SEC5, new HistogramTracker(), Intervals.seconds(5), Intervals.seconds(5));
-    Stats.register(ID.MIN, new HistogramTracker(), Intervals.seconds(5), Intervals.minutes(1));
-    Stats.register(ID.AGG, new AggregateLongTracker(), Intervals.seconds(5), Intervals.minutes(1));
-    Stats.register(ID.LAST, new LastLongTracker(), Intervals.seconds(5), Intervals.never());
+    TrakrJ.stats().register(ID.SEC5, new HistogramTracker(), Intervals.seconds(5), Intervals.seconds(5));
+    TrakrJ.stats().register(ID.MIN, new HistogramTracker(), Intervals.seconds(5), Intervals.minutes(1));
+    TrakrJ.stats().register(ID.AGG, new AggregateLongTracker(), Intervals.seconds(5), Intervals.minutes(1));
+    TrakrJ.stats().register(ID.LAST, new LastLongTracker(), Intervals.seconds(5), Intervals.never());
     Random r = new Random();
 
     while(true) {
       Thread.sleep(50);
       long val = r.nextInt(1000);
-      Stats.record(ID.SEC5, val);
-      Stats.record(ID.MIN, val);
-      Stats.record(ID.AGG, val);
-      Stats.record(ID.LAST, val);
+      TrakrJ.stats().record(ID.SEC5, val);
+      TrakrJ.stats().record(ID.MIN, val);
+      TrakrJ.stats().record(ID.AGG, val);
+      TrakrJ.stats().record(ID.LAST, val);
     }
   }
 

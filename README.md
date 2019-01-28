@@ -12,10 +12,10 @@ Run using `-Dtrakrj.enabled`:
 TrackerId id = TrackerId.generate("My Value");
 
 // Register our Histogram Tracker with the TrakrJ subsystem. Log every 5 seconds, Never Reset.
-Stats.register(id, new LastLongTracker(), Intervals.seconds(5), Intervals.never());
+TrakrJ.stats().register(id, new LastLongTracker(), Intervals.seconds(5), Intervals.never());
 
 // Send a value to TrakrJ, and watch the output
-Stats.record(id, 123L);
+TrakrJ.stats().record(id, 123L);
 
 // Keep the JVM from exiting while you watch
 Thread.sleep(TimeUnit.HOURS.toMillis(1));
@@ -34,13 +34,13 @@ Run using `-Dtrakrj.enabled`:
 TrackerId id = TrackerId.generate("My Histogram");
 
 // Register our Histogram Tracker with the TrakrJ subsystem. Log every 5 seconds, Reset every 1 minute.
-Stats.register(id, new HistogramTracker(), Intervals.seconds(5), Intervals.minutes(1));
+TrakrJ.stats().register(id, new HistogramTracker(), Intervals.seconds(5), Intervals.minutes(1));
 
 // Send random numbers to TrakrJ, and watch the output
 Random r = new Random();
 while(true) {
   Thread.sleep(50);
-  Stats.record(id, r.nextInt(1000));
+  TrakrJ.stats().record(id, r.nextInt(1000));
 }
 ```
 
@@ -54,12 +54,12 @@ Sun Jan 27 12:58:40 CST 2019 - TrakrJ - My Histogram - [ 0=16 50=505 90=901 99=9
 ## Stats API
 #### Register a Tracker
 ```
-Stats.register(TrackerId id, Tracker tracker, Interval logInterval, Interval resetInterval)
+TrakrJ.stats().register(TrackerId id, Tracker tracker, Interval logInterval, Interval resetInterval)
 ```
 
 #### Reset a Tracker On-Demand
 ```
-Stats.reset(TrackerId id)
+TrakrJ.stats().reset(TrackerId id)
 ```
 
 #### Record a Statistic

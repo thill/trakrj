@@ -16,92 +16,164 @@
 package io.thill.trakrj;
 
 import io.thill.trakrj.conductor.Conductor;
-import io.thill.trakrj.internal.load.Config;
-import io.thill.trakrj.internal.exception.Exceptions;
-import io.thill.trakrj.internal.load.Instantiate;
-import io.thill.trakrj.internal.conductor.NoOpConductor;
-import io.thill.trakrj.logger.StatLogger;
-
-import java.util.Map;
 
 /**
- * The main API for TrakrJ. This class takes care of all static initialization from the trakrj.properties and will dispatch accordingly to the underlying {@link
- * Conductor}. If trakrj.properties is not found, all calls to the underlying conductor will return immediately without executing any logic.
+ * The main API for TrakrJ statistics. This class dispatches statistics to the underlying {@link Conductor}.
  *
  * @author Eric Thill
  */
 public class Stats {
 
-  private static final Conductor CONDUCTOR;
+  private final Conductor conductor;
 
-  static {
-    Conductor conductor;
-    try {
-      Map<String, String> config = Config.loadConfig();
-      Config.tryPrintConfig(config);
-      StatLogger logger = Instantiate.instantiateLogger(config);
-      conductor = Instantiate.instantiateConductor(config, logger);
-    } catch(Throwable t) {
-      Exceptions.logError("Could not instantiate trackrj. All calls to " + Stats.class.getSimpleName() + " will no-op.\n", t);
-      conductor = new NoOpConductor();
-    }
-    CONDUCTOR = conductor;
+  /**
+   * Create a stats instance using the given conductor.
+   *
+   * @param conductor The conductor
+   */
+  public Stats(Conductor conductor) {
+    this.conductor = conductor;
   }
 
-  public static void register(TrackerId id, Tracker tracker, Interval logInterval, Interval resetInterval) {
-    CONDUCTOR.addTracker(id, tracker, logInterval, resetInterval);
+  /**
+   * Register a tracker with the underlying conductor.
+   *
+   * @param id            The unique ID of this tracker
+   * @param tracker       The tracker to register
+   * @param logInterval   The interval to log the tracker using the underlying {@link io.thill.trakrj.logger.StatLogger}
+   * @param resetInterval The interval to reset the tracker
+   */
+  public void register(TrackerId id, Tracker tracker, Interval logInterval, Interval resetInterval) {
+    conductor.addTracker(id, tracker, logInterval, resetInterval);
   }
 
-  public static void record(TrackerId id, long value) {
-    CONDUCTOR.record(id, 0, Double.NaN, null, value, Double.NaN, null);
+  /**
+   * Record a single long value.
+   *
+   * @param id    The id correlated with the tracker to record this value.
+   * @param value The value to record.
+   */
+  public void record(TrackerId id, long value) {
+    conductor.record(id, 0, Double.NaN, null, value, Double.NaN, null);
   }
 
-  public static void record(TrackerId id, double value) {
-    CONDUCTOR.record(id, 0, Double.NaN, null, 0, value, null);
+  /**
+   * Record a single double value.
+   *
+   * @param id    The id correlated with the tracker to record this value.
+   * @param value The value to record.
+   */
+  public void record(TrackerId id, double value) {
+    conductor.record(id, 0, Double.NaN, null, 0, value, null);
   }
 
-  public static void record(TrackerId id, Object value) {
-    CONDUCTOR.record(id, 0, Double.NaN, null, 0, Double.NaN, value);
+  /**
+   * Record a single Object value.
+   *
+   * @param id    The id correlated with the tracker to record this value.
+   * @param value The value to record.
+   */
+  public void record(TrackerId id, Object value) {
+    conductor.record(id, 0, Double.NaN, null, 0, Double.NaN, value);
   }
 
-  public static void record(TrackerId id, long key, long value) {
-    CONDUCTOR.record(id, key, Double.NaN, null, value, Double.NaN, null);
+  /**
+   * Record a single long:long key:value pair.
+   *
+   * @param id    The id correlated with the tracker to record this value.
+   * @param value The value to record.
+   */
+  public void record(TrackerId id, long key, long value) {
+    conductor.record(id, key, Double.NaN, null, value, Double.NaN, null);
   }
 
-  public static void record(TrackerId id, long key, double value) {
-    CONDUCTOR.record(id, key, Double.NaN, null, 0, value, null);
+  /**
+   * Record a single long:double key:value pair.
+   *
+   * @param id    The id correlated with the tracker to record this value.
+   * @param value The value to record.
+   */
+  public void record(TrackerId id, long key, double value) {
+    conductor.record(id, key, Double.NaN, null, 0, value, null);
   }
 
-  public static void record(TrackerId id, long key, Object value) {
-    CONDUCTOR.record(id, key, Double.NaN, null, 0, Double.NaN, value);
+  /**
+   * Record a single long:Object key:value pair.
+   *
+   * @param id    The id correlated with the tracker to record this value.
+   * @param value The value to record.
+   */
+  public void record(TrackerId id, long key, Object value) {
+    conductor.record(id, key, Double.NaN, null, 0, Double.NaN, value);
   }
 
-  public static void record(TrackerId id, double key, long value) {
-    CONDUCTOR.record(id, 0, key, null, value, Double.NaN, null);
+  /**
+   * Record a single double:long key:value pair.
+   *
+   * @param id    The id correlated with the tracker to record this value.
+   * @param value The value to record.
+   */
+  public void record(TrackerId id, double key, long value) {
+    conductor.record(id, 0, key, null, value, Double.NaN, null);
   }
 
-  public static void record(TrackerId id, double key, double value) {
-    CONDUCTOR.record(id, 0, key, null, 0, value, null);
+  /**
+   * Record a single double:double key:value pair.
+   *
+   * @param id    The id correlated with the tracker to record this value.
+   * @param value The value to record.
+   */
+  public void record(TrackerId id, double key, double value) {
+    conductor.record(id, 0, key, null, 0, value, null);
   }
 
-  public static void record(TrackerId id, double key, Object value) {
-    CONDUCTOR.record(id, 0, key, null, 0, Double.NaN, value);
+  /**
+   * Record a single double:Object key:value pair.
+   *
+   * @param id    The id correlated with the tracker to record this value.
+   * @param value The value to record.
+   */
+  public void record(TrackerId id, double key, Object value) {
+    conductor.record(id, 0, key, null, 0, Double.NaN, value);
   }
 
-  public static void record(TrackerId id, Object key, long value) {
-    CONDUCTOR.record(id, 0, Double.NaN, key, value, Double.NaN, null);
+  /**
+   * Record a single Object:long key:value pair.
+   *
+   * @param id    The id correlated with the tracker to record this value.
+   * @param value The value to record.
+   */
+  public void record(TrackerId id, Object key, long value) {
+    conductor.record(id, 0, Double.NaN, key, value, Double.NaN, null);
   }
 
-  public static void record(TrackerId id, Object key, double value) {
-    CONDUCTOR.record(id, 0, Double.NaN, key, 0, value, null);
+  /**
+   * Record a single Object:double key:value pair.
+   *
+   * @param id    The id correlated with the tracker to record this value.
+   * @param value The value to record.
+   */
+  public void record(TrackerId id, Object key, double value) {
+    conductor.record(id, 0, Double.NaN, key, 0, value, null);
   }
 
-  public static void record(TrackerId id, Object key, Object value) {
-    CONDUCTOR.record(id, 0, Double.NaN, key, 0, Double.NaN, value);
+  /**
+   * Record a single Object:Object key:value pair.
+   *
+   * @param id    The id correlated with the tracker to record this value.
+   * @param value The value to record.
+   */
+  public void record(TrackerId id, Object key, Object value) {
+    conductor.record(id, 0, Double.NaN, key, 0, Double.NaN, value);
   }
 
-  public static void reset(TrackerId id) {
-    CONDUCTOR.reset(id);
+  /**
+   * Reset the tracker correlated with the given ID
+   *
+   * @param id The ID
+   */
+  public void reset(TrackerId id) {
+    conductor.reset(id);
   }
 
 }
