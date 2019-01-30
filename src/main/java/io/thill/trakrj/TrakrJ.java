@@ -16,7 +16,7 @@
 package io.thill.trakrj;
 
 import io.thill.trakrj.conductor.Conductor;
-import io.thill.trakrj.internal.conductor.NoOpConductor;
+import io.thill.trakrj.conductor.DisabledConductor;
 import io.thill.trakrj.internal.exception.Exceptions;
 import io.thill.trakrj.internal.load.Config;
 import io.thill.trakrj.internal.load.Instantiate;
@@ -43,7 +43,7 @@ public class TrakrJ {
       conductor = Instantiate.instantiateConductor(config, logger);
     } catch(Throwable t) {
       Exceptions.logError("Could not instantiate trackrj. All calls to " + Stats.class.getSimpleName() + " will no-op.\n", t);
-      conductor = new NoOpConductor();
+      conductor = new DisabledConductor();
     }
     STATS = new Stats(conductor);
   }

@@ -13,24 +13,25 @@
  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.thill.trakrj.internal.conductor;
+package io.thill.trakrj.conductor;
 
 import io.thill.trakrj.Interval;
 import io.thill.trakrj.Tracker;
 import io.thill.trakrj.TrackerId;
-import io.thill.trakrj.conductor.Conductor;
+import io.thill.trakrj.internal.conductor.RecordEvent;
 import io.thill.trakrj.internal.conductor.RecordEvent.Type;
+import io.thill.trakrj.internal.conductor.RecordEventHandler;
+import io.thill.trakrj.internal.conductor.RecordEventRingBuffer;
 import io.thill.trakrj.logger.StatLogger;
 
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Internal class. Public methods may change or be removed without warning.
  *
  * @author Eric Thill
  */
-public class RingBufferConductor implements Conductor {
+public class DefaultConductor implements Conductor {
 
   private static final String CFGKEY_RINGBUFFER_SIZE = "ringbuffer.size";
   private static final String DEFAULT_RINGBUFFER_SIZE = "4096";
@@ -45,8 +46,6 @@ public class RingBufferConductor implements Conductor {
 
     eventHandler = new RecordEventHandler(ringBuffer, logger);
     eventHandler.start();
-
-    new AtomicBoolean().set(true);
   }
 
   @Override

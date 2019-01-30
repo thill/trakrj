@@ -15,8 +15,8 @@
  */
 package io.thill.trakrj.internal.load;
 
-import io.thill.trakrj.internal.conductor.NoOpConductor;
-import io.thill.trakrj.internal.conductor.RingBufferConductor;
+import io.thill.trakrj.conductor.DisabledConductor;
+import io.thill.trakrj.conductor.DefaultConductor;
 import io.thill.trakrj.logger.StderrStatLogger;
 
 import java.io.File;
@@ -48,8 +48,8 @@ public class Config {
   public static final String CFGKEY_CONDUCTOR_IMPL = CFGPREFIX_CONDUCTOR + CFGKEY_IMPL;
   public static final String CFGKEY_LOGGER_IMPL = CFGPREFIX_LOGGER + CFGKEY_IMPL;
 
-  public static final String DISABLED_CONDUCTOR_IMPL = NoOpConductor.class.getName();
-  public static final String DEFAULT_CONDUCTOR_IMPL = RingBufferConductor.class.getName();
+  public static final String DISABLED_CONDUCTOR_IMPL = DisabledConductor.class.getName();
+  public static final String DEFAULT_CONDUCTOR_IMPL = DefaultConductor.class.getName();
   public static final String DEFAULT_LOGGER_IMPL = StderrStatLogger.class.getName();
 
   public static final String CONDUCTOR_IMPL_DEFAULT = "default";
