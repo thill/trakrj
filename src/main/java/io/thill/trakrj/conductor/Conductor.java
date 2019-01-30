@@ -28,7 +28,7 @@ import java.util.Map;
  *
  * @author Eric Thill
  */
-public interface Conductor {
+public interface Conductor extends AutoCloseable {
   /**
    * Configure the tracker and start any threads. This is guaranteed to be called before any other method. Any threads that are started should be marked as a
    * daemon thread so they don't prevent the JVM from shutting down.
@@ -71,7 +71,7 @@ public interface Conductor {
   void reset(TrackerId id);
 
   /**
-   * Gracefully shutdown the conductor threads. This method should block until shutdown is successful.
+   * Gracefully close the conductor threads. This method should block until shutdown is successful.
    */
-  void shutdown();
+  void close();
 }

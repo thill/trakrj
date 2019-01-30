@@ -13,44 +13,28 @@
  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.thill.trakrj.conductor;
+package io.thill.trakrj.internal.thread;
 
-import io.thill.trakrj.Interval;
-import io.thill.trakrj.Tracker;
-import io.thill.trakrj.TrackerId;
-import io.thill.trakrj.logger.StatLogger;
-
-import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 /**
- * A disabled {@link Conductor} implementation. All method implementations are empty.
+ * Internal class. Public methods may change or be removed without warning.
  *
  * @author Eric Thill
  */
-public class DisabledConductor implements Conductor {
+public class SignalLatch {
 
-  @Override
-  public void configure(Map<String, String> config, StatLogger logger) {
+  private final CountDownLatch countDownLatch = new CountDownLatch(1);
 
+  public void signal() {
+    countDownLatch.countDown();
   }
 
-  @Override
-  public void addTracker(TrackerId id, Tracker tracker, Interval logInterval, Interval resetInterval) {
-
-  }
-
-  @Override
-  public void record(TrackerId id, long keyLong, double keyDouble, Object keyObject, long valLong, double valDouble, Object valObject) {
-
-  }
-
-  @Override
-  public void reset(TrackerId id) {
-
-  }
-
-  @Override
-  public void close() {
-
+  public void await() {
+    try {
+      countDownLatch.await();
+    } catch(InterruptedException e) {
+      return;
+    }
   }
 }

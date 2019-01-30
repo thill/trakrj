@@ -16,15 +16,45 @@
 package io.thill.trakrj;
 
 import io.thill.trakrj.conductor.Conductor;
+import io.thill.trakrj.conductor.DefaultConductor;
+import io.thill.trakrj.logger.StatLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * The main API for TrakrJ statistics. This class dispatches statistics to the underlying {@link Conductor}.
  *
  * @author Eric Thill
  */
-public class Stats {
+public class Stats implements AutoCloseable {
 
   private final Conductor conductor;
+
+  /**
+   * Create a {@link Stats} instance with a default conductor using the given {@link StatLogger}
+   *
+   * @param statLogger The stat logger to be used by the default conductor
+   * @return The created {@link Stats} instance
+   */
+  public static Stats create(StatLogger statLogger) {
+    return create(new DefaultConductor(), Collections.emptyMap(), statLogger);
+  }
+
+  /**
+   * Create a {@link Stats} instance using the given conductor. The given conductor will be configured with the given configuration and {@link StatLogger}.
+   *
+   * @param conductor The conductor instance to use
+   * @param conductorConfig The configuration for the given conductor instance
+   * @param statLogger The stat logger to be used by the given conductor instance
+   * @return The created {@link Stats} instance
+   */
+  public static Stats create(Conductor conductor, Map<String, String> conductorConfig, StatLogger statLogger) {
+    conductor.configure(conductorConfig, statLogger);
+    return new Stats(conductor);
+  }
 
   /**
    * Create a stats instance using the given conductor.
@@ -176,4 +206,8 @@ public class Stats {
     conductor.reset(id);
   }
 
+  @Override
+  public void close() {
+    conductor.close();
+  }
 }

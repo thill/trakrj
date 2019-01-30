@@ -19,6 +19,7 @@ import io.thill.trakrj.Interval;
 import io.thill.trakrj.Intervals;
 import io.thill.trakrj.TrackerId;
 import io.thill.trakrj.internal.conductor.RecordEvent.Type;
+import io.thill.trakrj.internal.thread.SignalLatch;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,12 +31,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * @author Eric Thill
  */
-public class LogScheduler {
+public class LogScheduler implements AutoCloseable {
 
   private final long MIN_SLEEP = TimeUnit.DAYS.toMillis(1);
   private final List<TrackerContext> trackers = new ArrayList<>();
   private final AtomicBoolean keepRunning = new AtomicBoolean(true);
   private final Object wakeup = new Object();
+  private final SignalLatch shutdownCompleteLatch = new SignalLatch();
   private final RecordEventRingBuffer ringBuffer;
   private final Thread thread;
 
@@ -49,38 +51,44 @@ public class LogScheduler {
     thread.start();
   }
 
-  public void stop() {
+  @Override
+  public void close() {
     keepRunning.set(false);
     thread.interrupt();
+    shutdownCompleteLatch.await();
   }
 
   private void loop() {
-    while(keepRunning.get()) {
-      final long now = System.currentTimeMillis();
-      long nearestDispatch = now + MIN_SLEEP;
-      synchronized(trackers) {
-        for(int i = 0; i < trackers.size(); i++) {
-          TrackerContext tc = trackers.get(i);
-          long timeToDispatch = tc.nextLogDispatch - now;
-          // check if this Tracker's dispatch time has surpassed
-          if(timeToDispatch <= 0) {
-            // check if this Tracker's reset time has also surpassed
-            long timeToReset = tc.nextResetDispatch - now;
-            if(timeToReset <= 0) {
-              dispatch(tc.id, Type.LOG_AND_RESET);
-            } else {
-              dispatch(tc.id, Type.LOG);
+    try {
+      while(keepRunning.get()) {
+        final long now = System.currentTimeMillis();
+        long nearestDispatch = now + MIN_SLEEP;
+        synchronized(trackers) {
+          for(int i = 0; i < trackers.size(); i++) {
+            TrackerContext tc = trackers.get(i);
+            long timeToDispatch = tc.nextLogDispatch - now;
+            // check if this Tracker's dispatch time has surpassed
+            if(timeToDispatch <= 0) {
+              // check if this Tracker's reset time has also surpassed
+              long timeToReset = tc.nextResetDispatch - now;
+              if(timeToReset <= 0) {
+                dispatch(tc.id, Type.LOG_AND_RESET);
+              } else {
+                dispatch(tc.id, Type.LOG);
+              }
+              scheduleNextDispatch(tc);
             }
-            scheduleNextDispatch(tc);
-          }
-          if(tc.nextLogDispatch < nearestDispatch) {
-            nearestDispatch = tc.nextLogDispatch;
+            if(tc.nextLogDispatch < nearestDispatch) {
+              nearestDispatch = tc.nextLogDispatch;
+            }
           }
         }
+        // sleep until next dispatch
+        long sleep = nearestDispatch - System.currentTimeMillis();
+        trySleep(sleep);
       }
-      // sleep until next dispatch
-      long sleep = nearestDispatch - System.currentTimeMillis();
-      trySleep(sleep);
+    } finally {
+      shutdownCompleteLatch.signal();
     }
   }
 
@@ -134,7 +142,7 @@ public class LogScheduler {
         synchronized(wakeup) {
           wakeup.wait(sleep);
         }
-      } catch(InterruptedException e1) {
+      } catch(InterruptedException e) {
         return;
       }
     }

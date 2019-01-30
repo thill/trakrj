@@ -17,10 +17,12 @@ package io.thill.trakrj.internal.conductor;
 
 import io.thill.trakrj.Tracker;
 import io.thill.trakrj.internal.exception.Exceptions;
+import io.thill.trakrj.internal.thread.SignalLatch;
 import io.thill.trakrj.logger.StatLogger;
 import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
 import org.eclipse.collections.impl.factory.primitive.IntObjectMaps;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -28,10 +30,12 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @author Eric Thill
  */
-public class RecordEventHandler {
+public class RecordEventHandler implements AutoCloseable {
 
   private final AtomicInteger missedEvents = new AtomicInteger();
   private final MutableIntObjectMap<Tracker> trackers = IntObjectMaps.mutable.empty();
+  private final AtomicBoolean keepRunning = new AtomicBoolean(true);
+  private final SignalLatch shutdownCompleteLatch = new SignalLatch();
   private final RecordEventRingBuffer ringBuffer;
   private final StatLogger statLogger;
   private final LogScheduler scheduler;
@@ -54,13 +58,24 @@ public class RecordEventHandler {
     scheduler.start();
   }
 
+  @Override
+  public void close() {
+    keepRunning.set(false);
+    scheduler.close();
+    shutdownCompleteLatch.await();
+  }
+
   private void runLoop() {
     try {
-      while(true) {
+      while(keepRunning.get()) {
         handle(ringBuffer.take());
       }
+    } catch(InterruptedException e) {
+
     } catch(Throwable t) {
       Exceptions.logError("TrakrJ conductor encountered an exception: \n" + Exceptions.throwableToString(t));
+    } finally {
+      shutdownCompleteLatch.signal();
     }
   }
 

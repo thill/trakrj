@@ -23,11 +23,14 @@ import io.thill.trakrj.internal.conductor.RecordEvent.Type;
 import io.thill.trakrj.internal.conductor.RecordEventHandler;
 import io.thill.trakrj.internal.conductor.RecordEventRingBuffer;
 import io.thill.trakrj.logger.StatLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
 /**
- * Internal class. Public methods may change or be removed without warning.
+ * The default {@link Conductor} implementation. This implementation uses an internal ring buffer. When the internal ring buffer is full, record events will be
+ * missed. Should any events be missed, the number of missed events will be logged during the next {@link Tracker} log event.
  *
  * @author Eric Thill
  */
@@ -35,6 +38,8 @@ public class DefaultConductor implements Conductor {
 
   private static final String CFGKEY_RINGBUFFER_SIZE = "ringbuffer.size";
   private static final String DEFAULT_RINGBUFFER_SIZE = "4096";
+
+  private final Logger logger = LoggerFactory.getLogger(getClass());
 
   private RecordEventHandler eventHandler;
   private RecordEventRingBuffer ringBuffer;
@@ -46,6 +51,8 @@ public class DefaultConductor implements Conductor {
 
     eventHandler = new RecordEventHandler(ringBuffer, logger);
     eventHandler.start();
+
+    this.logger.debug("Started");
   }
 
   @Override
@@ -86,7 +93,9 @@ public class DefaultConductor implements Conductor {
   }
 
   @Override
-  public void shutdown() {
-
+  public void close() {
+    logger.debug("Closing...");
+    eventHandler.close();
+    logger.debug("Closed");
   }
 }
