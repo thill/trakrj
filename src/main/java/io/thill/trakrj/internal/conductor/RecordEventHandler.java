@@ -39,11 +39,13 @@ public class RecordEventHandler implements AutoCloseable {
   private final RecordEventRingBuffer ringBuffer;
   private final StatLogger statLogger;
   private final LogScheduler scheduler;
+  private final Thread thread;
 
   public RecordEventHandler(RecordEventRingBuffer ringBuffer, StatLogger statLogger) {
     this.ringBuffer = ringBuffer;
     this.statLogger = statLogger;
     this.scheduler = new LogScheduler(ringBuffer);
+    this.thread = new Thread(this::runLoop, "TrakrJ-Conductor");
   }
 
   public void incrementMissedEvents() {
@@ -51,10 +53,8 @@ public class RecordEventHandler implements AutoCloseable {
   }
 
   public void start() {
-    Thread t = new Thread(this::runLoop, "TrakrJ-Conductor");
-    t.setDaemon(true);
-    t.start();
-
+    thread.setDaemon(true);
+    thread.start();
     scheduler.start();
   }
 
@@ -62,6 +62,7 @@ public class RecordEventHandler implements AutoCloseable {
   public void close() {
     keepRunning.set(false);
     scheduler.close();
+    thread.interrupt();
     shutdownCompleteLatch.await();
   }
 
@@ -71,7 +72,7 @@ public class RecordEventHandler implements AutoCloseable {
         handle(ringBuffer.take());
       }
     } catch(InterruptedException e) {
-
+      return;
     } catch(Throwable t) {
       Exceptions.logError("TrakrJ conductor encountered an exception: \n" + Exceptions.throwableToString(t));
     } finally {
