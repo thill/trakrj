@@ -62,6 +62,7 @@ public class StatsDStatLogger implements StatLogger {
   public void configure(Map<String, String> config) {
     hostname = config.getOrDefault(CFGKEY_HOST, DEFAULT_HOST);
     port = Integer.parseInt(config.getOrDefault(CFGKEY_PORT, Integer.toString(DEFAULT_PORT)));
+    packetSize = Integer.parseInt(config.getOrDefault(CFGKEY_PACKET_SIZE, Integer.toString(DEFAULT_PACKET_SIZE)));
     socket = null;
   }
 

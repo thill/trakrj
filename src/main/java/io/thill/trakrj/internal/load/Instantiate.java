@@ -78,6 +78,8 @@ public class Instantiate {
         return StdoutStatLogger.class.getName();
       case LOGGER_IMPL_MULTI:
         return MultiStatLogger.class.getName();
+      case LOGGER_IMPL_STATSD:
+        return StatsDStatLogger.class.getName();
       default:
         return loggerClass;
     }

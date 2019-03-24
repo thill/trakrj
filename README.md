@@ -97,6 +97,7 @@ logger.impl=stderr
 logger.impl=stdout
 logger.impl=slf4j
 logger.impl=multi
+logger.impl=statsd
 ```
 You may create a custom logger by implementing `io.thill.trakrj.logger.StatLogger` and setting the fully qualified path for `logger.impl`
 
@@ -105,6 +106,7 @@ You may log to multiple stat loggers using the `MultiStatLogger`, which will fan
 ```
 logger.impl=multi
 logger.slf4j.impl=slf4j
+logger.statsd.impl=statsd
 logger.custom.impl=my.custom.StatLoggerImpl
 logger.custom.mykey1=hello
 logger.custom.mykey2=world
