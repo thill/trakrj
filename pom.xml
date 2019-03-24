@@ -4,7 +4,7 @@
 
     <groupId>io.thill.trakrj</groupId>
     <artifactId>trakrj</artifactId>
-    <version>0.10.1</version>
+    <version>0.10.2-SNAPSHOT</version>
 
     <name>TrakrJ</name>
     <description>A high-throughput, low-latency, statistic tracking framework for Java applications</description>
@@ -33,7 +33,7 @@
         <url>https://github.com/thillio/trakrj</url>
         <connection>scm:git:git@github.com:thillio/trakrj.git</connection>
         <developerConnection>scm:git:git@github.com:thillio/trakrj.git</developerConnection>
-        <tag>trakrj-0.10.1</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <distributionManagement>
