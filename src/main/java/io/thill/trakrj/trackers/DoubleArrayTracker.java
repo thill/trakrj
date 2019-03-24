@@ -16,10 +16,15 @@
 package io.thill.trakrj.trackers;
 
 import io.thill.trakrj.Record;
+import io.thill.trakrj.Stat;
+import io.thill.trakrj.Stat.StatType;
 import io.thill.trakrj.Tracker;
 import io.thill.trakrj.function.IntDoubleConsumer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Tracker to keep double values in an array. keyLong is used as the index, and valueDouble is used as the value. Reset fills the array with nullValue.
@@ -29,26 +34,31 @@ import java.util.Arrays;
 public class DoubleArrayTracker implements Tracker {
 
   private final double[] array;
+  private final List<StatImpl> stats = new ArrayList<>();
+  private final List<Stat> statsUnmodifiable = Collections.unmodifiableList(stats);
   private final double nullValue;
+  private final double resetValue;
 
   /**
-   * Construct the tracker with the given array size. nullValue will default to 0.
+   * Construct the tracker with the given array size. resetValue will default to NaN, nullValue will default to NaN.
    *
    * @param size The size/length of the underlying array
    */
   public DoubleArrayTracker(int size) {
-    this(size, 0);
+    this(size, Double.NaN, Double.NaN);
   }
 
   /**
    * Construct the tracker with the given array size and nullValue.
    *
-   * @param size      The size/length of the underlying array
-   * @param nullValue The value that will be filled to the underlying array on a reset.
+   * @param size       The size/length of the underlying array
+   * @param nullValue  The value that will be treated as a null statistic
+   * @param resetValue The value that will be filled to the underlying array on a reset.
    */
-  public DoubleArrayTracker(int size, double nullValue) {
+  public DoubleArrayTracker(int size, double nullValue, double resetValue) {
     array = new double[size];
     this.nullValue = nullValue;
+    this.resetValue = resetValue;
     reset();
   }
 
@@ -95,5 +105,22 @@ public class DoubleArrayTracker implements Tracker {
    */
   public double getNullValue() {
     return nullValue;
+  }
+
+  @Override
+  public List<Stat> stats() {
+    if(stats.size() == 0) {
+      for(int i = 0; i < array.length; i++) {
+        stats.add(new StatImpl(Integer.toString(i), StatType.DOUBLE));
+      }
+    }
+    for(int i = 0; i < array.length; i++) {
+      if(array[i] == nullValue) {
+        stats.get(i).setNull();
+      } else {
+        stats.get(i).setDoubleValue(array[i]);
+      }
+    }
+    return statsUnmodifiable;
   }
 }

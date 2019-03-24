@@ -23,14 +23,18 @@ import io.thill.trakrj.Tracker;
  *
  * @author Eric Thill
  */
-public class AverageLongTracker implements Tracker {
+public class AverageLongTracker extends AbstractLongTracker {
 
   private long aggregate;
   private long numRecords;
 
+  public AverageLongTracker() {
+    super(-1);
+  }
+
   @Override
   public void record(Record record) {
-    aggregate += record.getValueLong();
+    aggregate += record.getValueDouble();
     numRecords++;
   }
 
@@ -41,16 +45,7 @@ public class AverageLongTracker implements Tracker {
   }
 
   @Override
-  public String toString() {
-    return String.valueOf(getAverage());
-  }
-
-  /**
-   * Get the average
-   *
-   * @return The average
-   */
-  public long getAverage() {
+  public long getValue() {
     return aggregate / numRecords;
   }
 

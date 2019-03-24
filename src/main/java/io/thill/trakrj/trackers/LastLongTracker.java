@@ -23,7 +23,7 @@ import io.thill.trakrj.Tracker;
  *
  * @author Eric Thill
  */
-public class LastLongTracker implements Tracker {
+public class LastLongTracker extends AbstractLongTracker {
 
   private final long nullValue;
   private long value;
@@ -41,6 +41,7 @@ public class LastLongTracker implements Tracker {
    * @param nullValue The null value
    */
   public LastLongTracker(long nullValue) {
+    super(nullValue);
     this.nullValue = nullValue;
   }
 
@@ -55,25 +56,7 @@ public class LastLongTracker implements Tracker {
   }
 
   @Override
-  public String toString() {
-    return value == nullValue ? "null" : String.valueOf(value);
-  }
-
-  /**
-   * Get the last value
-   *
-   * @return The last value
-   */
   public long getValue() {
     return value;
-  }
-
-  /**
-   * Value the last element is reset to, which represents no value being stored.
-   *
-   * @return The null value
-   */
-  public long getNullValue() {
-    return nullValue;
   }
 }

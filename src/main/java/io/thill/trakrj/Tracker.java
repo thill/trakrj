@@ -15,10 +15,18 @@
  */
 package io.thill.trakrj;
 
+import java.util.List;
+
 /**
+ * A statistic tracker. {@link io.thill.trakrj.logger.StatLogger} implementations will call {@link Object#toString()} for purely text-based loggers or {@link
+ * Tracker#stats()} for more fine-grained
+ *
  * @author Eric Thill
  */
 public interface Tracker {
-	void record(Record record);
-	void reset();
+  void record(Record record);
+
+  void reset();
+
+  List<? extends Stat> stats();
 }

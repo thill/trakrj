@@ -16,6 +16,8 @@
 package io.thill.trakrj.trackers;
 
 import io.thill.trakrj.Record;
+import io.thill.trakrj.Stat;
+import io.thill.trakrj.Stat.StatType;
 import io.thill.trakrj.Tracker;
 import org.HdrHistogram.Histogram;
 
@@ -154,11 +156,11 @@ public class HistogramTracker implements Tracker {
 
   @Override
   public String toString() {
-    long count = histogram.getTotalCount();
-    StringBuilder sb = new StringBuilder("[");
+    final long count = histogram.getTotalCount();
+    final StringBuilder sb = new StringBuilder("[");
     if(count == 0) {
       for(int i = 0; i < percentiles.size(); i++) {
-        String pctDisplay = percentilesDisplay.get(i);
+        final String pctDisplay = percentilesDisplay.get(i);
         sb.append(" ").append(pctDisplay).append("=").append(0);
       }
     } else {
@@ -178,6 +180,34 @@ public class HistogramTracker implements Tracker {
     }
     sb.append(" ] count=").append(count);
     return sb.toString();
+  }
+
+  @Override
+  public List<? extends Stat> stats() {
+    final long count = histogram.getTotalCount();
+    final List<Stat> stats = new ArrayList<>();
+    if(count == 0) {
+      for(int i = 0; i < percentiles.size(); i++) {
+        final String pctDisplay = percentilesDisplay.get(i);
+        stats.add(new StatImpl(pctDisplay, StatType.LONG).setLongValue(0));
+      }
+    } else {
+      for(int i = 0; i < percentiles.size(); i++) {
+        double pct = percentiles.get(i);
+        String pctDisplay = percentilesDisplay.get(i);
+        long val;
+        if(pct == 0.0) {
+          val = histogram.getMinValue();
+        } else if(pct == 100.0) {
+          val = histogram.getMaxValue();
+        } else {
+          val = histogram.getValueAtPercentile(pct);
+        }
+        stats.add(new StatImpl(pctDisplay, StatType.LONG).setLongValue(val));
+      }
+    }
+    stats.add(new StatImpl("count", StatType.LONG).setLongValue(count));
+    return stats;
   }
 
 }

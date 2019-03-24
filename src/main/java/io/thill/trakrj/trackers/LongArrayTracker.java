@@ -16,10 +16,15 @@
 package io.thill.trakrj.trackers;
 
 import io.thill.trakrj.Record;
+import io.thill.trakrj.Stat;
+import io.thill.trakrj.Stat.StatType;
 import io.thill.trakrj.Tracker;
 import io.thill.trakrj.function.IntLongConsumer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Tracker to keep long values in an array. keyLong is used as the index, and valueLong is used as the value. Reset fills the array with nullValue.
@@ -29,26 +34,31 @@ import java.util.Arrays;
 public class LongArrayTracker implements Tracker {
 
   private final long[] array;
+  private final List<StatImpl> stats = new ArrayList<>();
+  private final List<Stat> statsUnmodifiable = Collections.unmodifiableList(stats);
   private final long nullValue;
+  private final long resetValue;
 
   /**
-   * Construct the tracker with the given array size. nullValue will default to 0.
+   * Construct the tracker with the given array size. nullValue will default to Long.MAX_VALUE, resetValue will default to Long.MAX_VALUE.
    *
    * @param size The size/length of the underlying array
    */
   public LongArrayTracker(int size) {
-    this(size, 0);
+    this(size, Long.MAX_VALUE, Long.MAX_VALUE);
   }
 
   /**
    * Construct the tracker with the given array size and nullValue.
    *
-   * @param size      The size/length of the underlying array
-   * @param nullValue The value that will be filled to the underlying array on a reset.
+   * @param size       The size/length of the underlying array
+   * @param nullValue  The value that will be treated as a null statistic
+   * @param resetValue The value that will be filled to the underlying array on a reset.
    */
-  public LongArrayTracker(int size, long nullValue) {
+  public LongArrayTracker(int size, long nullValue, long resetValue) {
     array = new long[size];
     this.nullValue = nullValue;
+    this.resetValue = resetValue;
     reset();
   }
 
@@ -59,7 +69,7 @@ public class LongArrayTracker implements Tracker {
 
   @Override
   public void reset() {
-    Arrays.fill(array, nullValue);
+    Arrays.fill(array, resetValue);
   }
 
   @Override
@@ -95,5 +105,22 @@ public class LongArrayTracker implements Tracker {
    */
   public long getNullValue() {
     return nullValue;
+  }
+
+  @Override
+  public List<Stat> stats() {
+    if(stats.size() == 0) {
+      for(int i = 0; i < array.length; i++) {
+        stats.add(new StatImpl(Integer.toString(i), StatType.DOUBLE));
+      }
+    }
+    for(int i = 0; i < array.length; i++) {
+      if(array[i] == nullValue) {
+        stats.get(i).setNull();
+      } else {
+        stats.get(i).setLongValue(array[i]);
+      }
+    }
+    return statsUnmodifiable;
   }
 }

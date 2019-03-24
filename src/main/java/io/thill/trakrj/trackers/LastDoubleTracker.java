@@ -23,7 +23,7 @@ import io.thill.trakrj.Tracker;
  *
  * @author Eric Thill
  */
-public class LastDoubleTracker implements Tracker {
+public class LastDoubleTracker extends AbstractDoubleTracker {
 
   private final double nullValue;
   private double value;
@@ -41,6 +41,7 @@ public class LastDoubleTracker implements Tracker {
    * @param nullValue The null value
    */
   public LastDoubleTracker(double nullValue) {
+    super(nullValue);
     this.nullValue = nullValue;
   }
 
@@ -55,25 +56,8 @@ public class LastDoubleTracker implements Tracker {
   }
 
   @Override
-  public String toString() {
-    return value == nullValue ? "null" : String.valueOf(value);
-  }
-
-  /**
-   * Get the last value
-   *
-   * @return The last value
-   */
   public double getValue() {
     return value;
   }
 
-  /**
-   * Value the last element is reset to, which represents no value being stored.
-   *
-   * @return The null value
-   */
-  public double getNullValue() {
-    return nullValue;
-  }
 }

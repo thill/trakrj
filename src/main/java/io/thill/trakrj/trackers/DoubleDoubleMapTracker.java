@@ -16,10 +16,15 @@
 package io.thill.trakrj.trackers;
 
 import io.thill.trakrj.Record;
+import io.thill.trakrj.Stat;
+import io.thill.trakrj.Stat.StatType;
 import io.thill.trakrj.Tracker;
 import io.thill.trakrj.function.DoubleDoubleConsumer;
 import org.eclipse.collections.api.map.primitive.MutableDoubleDoubleMap;
 import org.eclipse.collections.impl.factory.primitive.DoubleDoubleMaps;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Tracker to keep double:double values in a map. Reset clears the map.
@@ -55,4 +60,10 @@ public class DoubleDoubleMapTracker implements Tracker {
 		map.forEachKeyValue((double k, double v) -> c.accept(k, v));
 	}
 
+	@Override
+	public List<? extends Stat> stats() {
+		final List<Stat> stats = new ArrayList<>();
+		forEach((k,v) -> stats.add(new StatImpl(Double.toString(k), StatType.DOUBLE).setDoubleValue(v)));
+		return stats;
+	}
 }

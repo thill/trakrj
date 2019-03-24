@@ -16,16 +16,19 @@
 package io.thill.trakrj.trackers;
 
 import io.thill.trakrj.Record;
-import io.thill.trakrj.Tracker;
 
 /**
  * Tracker to aggregate long values, reset to 0.
  *
  * @author Eric Thill
  */
-public class AggregateLongTracker implements Tracker {
+public class AggregateLongTracker extends AbstractLongTracker {
 
 	private long value;
+
+	public AggregateLongTracker() {
+		super(-1);
+	}
 
 	@Override
 	public void record(Record record) {
@@ -36,18 +39,9 @@ public class AggregateLongTracker implements Tracker {
 	public void reset() {
 		value = 0;
 	}
-	
-	@Override
-	public String toString() {
-		return String.valueOf(value);
-	}
 
-	/**
-	 * Get the aggregate
-	 *
-	 * @return The aggregate
-	 */
-	public long getAggregate() {
+	@Override
+	public long getValue() {
 		return value;
 	}
 }

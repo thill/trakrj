@@ -23,13 +23,17 @@ import io.thill.trakrj.Tracker;
  *
  * @author Eric Thill
  */
-public class AggregateDoubleTracker implements Tracker {
+public class AggregateDoubleTracker extends AbstractDoubleTracker {
 
 	private double value;
 
+	public AggregateDoubleTracker() {
+		super(Double.NaN);
+	}
+
 	@Override
 	public void record(Record record) {
-		value += record.getValueDouble();
+		value += record.getValueLong();
 	}
 
 	@Override
@@ -38,16 +42,8 @@ public class AggregateDoubleTracker implements Tracker {
 	}
 
 	@Override
-	public String toString() {
-		return String.valueOf(value);
-	}
-
-	/**
-	 * Get the aggregate
-	 *
-	 * @return The aggregate
-	 */
-	public double getAggregate() {
+	public double getValue() {
 		return value;
 	}
+
 }

@@ -23,10 +23,14 @@ import io.thill.trakrj.Tracker;
  *
  * @author Eric Thill
  */
-public class AverageDoubleTracker implements Tracker {
+public class AverageDoubleTracker extends AbstractDoubleTracker {
 
 	private double aggregate;
 	private long numRecords;
+
+	public AverageDoubleTracker() {
+		super(Double.NaN);
+	}
 
 	@Override
 	public void record(Record record) {
@@ -41,16 +45,7 @@ public class AverageDoubleTracker implements Tracker {
 	}
 
 	@Override
-	public String toString() {
-		return String.valueOf(getAverage());
-	}
-
-	/**
-	 * Get the average
-	 *
-	 * @return The average
-	 */
-	public double getAverage() {
+	public double getValue() {
 		return aggregate / numRecords;
 	}
 

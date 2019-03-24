@@ -13,23 +13,20 @@
  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.thill.trakrj.logger;
-
-import io.thill.trakrj.Tracker;
-import io.thill.trakrj.TrackerId;
-
-import java.util.Map;
+package io.thill.trakrj;
 
 /**
- * The {@link StatLogger} is responsible for stringifying trackers and logging them. Typically trackers are stringified using {@link Object#toString()}, but
- * custom implementations for a specific application may decide to use other means.
- *
  * @author Eric Thill
  */
-public interface StatLogger {
-  void configure(Map<String, String> config);
+public interface Stat {
+  String name();
+  boolean isNull();
+  long longValue();
+  double doubleValue();
+  Object objectValue();
+  StatType type();
 
-  void log(TrackerId id, Tracker tracker);
-
-
+  enum StatType {
+    LONG, DOUBLE, OBJECT
+  }
 }

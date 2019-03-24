@@ -16,10 +16,14 @@
 package io.thill.trakrj.trackers;
 
 import io.thill.trakrj.Record;
+import io.thill.trakrj.Stat;
+import io.thill.trakrj.Stat.StatType;
 import io.thill.trakrj.Tracker;
 import io.thill.trakrj.function.ObjectObjectConsumer;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -56,4 +60,10 @@ public class ObjectObjectMapTracker implements Tracker {
     map.forEach((Object key, Object value) -> c.accept(key, value));
   }
 
+  @Override
+  public List<? extends Stat> stats() {
+    final List<Stat> stats = new ArrayList<>();
+    forEach((k,v) -> stats.add(new StatImpl(k.toString(), StatType.OBJECT).setObjectValue(v)));
+    return stats;
+  }
 }

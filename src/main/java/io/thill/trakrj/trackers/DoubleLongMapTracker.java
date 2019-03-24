@@ -16,10 +16,15 @@
 package io.thill.trakrj.trackers;
 
 import io.thill.trakrj.Record;
+import io.thill.trakrj.Stat;
+import io.thill.trakrj.Stat.StatType;
 import io.thill.trakrj.Tracker;
 import io.thill.trakrj.function.DoubleLongConsumer;
 import org.eclipse.collections.api.map.primitive.MutableDoubleLongMap;
 import org.eclipse.collections.impl.factory.primitive.DoubleLongMaps;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Tracker to keep double:long values in a map. Reset clears the map.
@@ -55,4 +60,10 @@ public class DoubleLongMapTracker implements Tracker {
 		map.forEachKeyValue((double k, long v) -> c.accept(k, v));
 	}
 
+	@Override
+	public List<? extends Stat> stats() {
+		final List<Stat> stats = new ArrayList<>();
+		forEach((k,v) -> stats.add(new StatImpl(Double.toString(k), StatType.LONG).setLongValue(v)));
+		return stats;
+	}
 }

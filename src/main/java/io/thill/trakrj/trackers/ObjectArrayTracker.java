@@ -16,10 +16,15 @@
 package io.thill.trakrj.trackers;
 
 import io.thill.trakrj.Record;
+import io.thill.trakrj.Stat;
+import io.thill.trakrj.Stat.StatType;
 import io.thill.trakrj.Tracker;
 import io.thill.trakrj.function.IntObjectConsumer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Tracker to keep Object values in an array. keyLong is used as the index, and valueObject is used as the value. Reset fills the array with null.
@@ -29,6 +34,8 @@ import java.util.Arrays;
 public class ObjectArrayTracker implements Tracker {
 
   private final Object[] array;
+  private final List<StatImpl> stats = new ArrayList<>();
+  private final List<Stat> statsUnmodifiable = Collections.unmodifiableList(stats);
 
   public ObjectArrayTracker(int size) {
     array = new Object[size];
@@ -70,4 +77,16 @@ public class ObjectArrayTracker implements Tracker {
     }
   }
 
+  @Override
+  public List<Stat> stats() {
+    if(stats.size() == 0) {
+      for(int i = 0; i < array.length; i++) {
+        stats.add(new StatImpl(Integer.toString(i), StatType.DOUBLE));
+      }
+    }
+    for(int i = 0; i < array.length; i++) {
+      stats.get(i).setObjectValue(array[i]);
+    }
+    return statsUnmodifiable;
+  }
 }

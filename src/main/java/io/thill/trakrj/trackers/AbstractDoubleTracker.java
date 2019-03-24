@@ -13,23 +13,52 @@
  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.thill.trakrj.logger;
+package io.thill.trakrj.trackers;
 
+import io.thill.trakrj.Stat;
+import io.thill.trakrj.Stat.StatType;
 import io.thill.trakrj.Tracker;
-import io.thill.trakrj.TrackerId;
 
-import java.util.Map;
+import java.util.Arrays;
+import java.util.List;
 
 /**
- * The {@link StatLogger} is responsible for stringifying trackers and logging them. Typically trackers are stringified using {@link Object#toString()}, but
- * custom implementations for a specific application may decide to use other means.
- *
  * @author Eric Thill
  */
-public interface StatLogger {
-  void configure(Map<String, String> config);
+public abstract class AbstractDoubleTracker implements Tracker {
 
-  void log(TrackerId id, Tracker tracker);
+  private static final String STAT_NAME = "value";
 
+  private final double nullValue;
+  private final StatImpl stat;
+  private final List<Stat> stats;
 
+  public AbstractDoubleTracker(double nullValue) {
+    this.nullValue = nullValue;
+    stat = new StatImpl(STAT_NAME, StatType.DOUBLE);
+    stats = Arrays.asList(stat);
+  }
+
+  @Override
+  public final List<Stat> stats() {
+    final double value = getValue();
+    if(value == nullValue) {
+      stat.setNull();
+    } else {
+      stat.setDoubleValue(value);
+    }
+    return stats;
+  }
+
+  public abstract double getValue();
+
+  public double getNullValue() {
+    return nullValue;
+  }
+
+  @Override
+  public String toString() {
+    final double value = getValue();
+    return value == nullValue ? null : Double.toString(value);
+  }
 }

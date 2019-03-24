@@ -23,7 +23,7 @@ import io.thill.trakrj.Tracker;
  *
  * @author Eric Thill
  */
-public class LastObjectTracker implements Tracker {
+public class LastObjectTracker extends AbstractObjectTracker {
 
 	private Object value;
 
@@ -38,15 +38,6 @@ public class LastObjectTracker implements Tracker {
 	}
 	
 	@Override
-	public String toString() {
-		return String.valueOf(value);
-	}
-
-	/**
-	 * Get the last value
-	 *
-	 * @return The last value, or null if none exists
-	 */
 	public Object getValue() {
 		return value;
 	}
