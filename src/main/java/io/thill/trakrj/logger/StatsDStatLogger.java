@@ -30,14 +30,17 @@ import java.util.Map;
  */
 public class StatsDStatLogger implements StatLogger {
 
+  private static final String CFGKEY_NAME_PREFIX = "name.prefix";
   private static final String CFGKEY_HOST = "hostname";
   private static final String CFGKEY_PORT = "port";
   private static final String CFGKEY_PACKET_SIZE = "packet.size";
+  private static final String DEFAULT_NAME_PREFIX = "";
   private static final String DEFAULT_HOST = "localhost";
   private static final int DEFAULT_PORT = 8125;
   private static final int DEFAULT_PACKET_SIZE = 500;
   private static final Charset UTF8 = Charset.forName("UTF-8");
 
+  private String namePrefix;
   private String hostname;
   private int port;
   private int packetSize;
@@ -45,14 +48,15 @@ public class StatsDStatLogger implements StatLogger {
 
 
   public StatsDStatLogger() {
-    this(CFGKEY_HOST, DEFAULT_PORT, DEFAULT_PACKET_SIZE);
+    this(DEFAULT_NAME_PREFIX, DEFAULT_HOST, DEFAULT_PORT, DEFAULT_PACKET_SIZE);
   }
 
-  public StatsDStatLogger(String hostname, int port) {
-    this(hostname, port, DEFAULT_PACKET_SIZE);
+  public StatsDStatLogger(String namePrefix) {
+    this(namePrefix, DEFAULT_HOST, DEFAULT_PORT, DEFAULT_PACKET_SIZE);
   }
 
-  public StatsDStatLogger(String hostname, int port, int packetSize) {
+  public StatsDStatLogger(String namePrefix, String hostname, int port, int packetSize) {
+    this.namePrefix = namePrefix;
     this.hostname = hostname;
     this.port = port;
     this.packetSize = packetSize;
@@ -60,6 +64,7 @@ public class StatsDStatLogger implements StatLogger {
 
   @Override
   public void configure(Map<String, String> config) {
+    namePrefix = config.getOrDefault(CFGKEY_NAME_PREFIX, DEFAULT_NAME_PREFIX);
     hostname = config.getOrDefault(CFGKEY_HOST, DEFAULT_HOST);
     port = Integer.parseInt(config.getOrDefault(CFGKEY_PORT, Integer.toString(DEFAULT_PORT)));
     packetSize = Integer.parseInt(config.getOrDefault(CFGKEY_PACKET_SIZE, Integer.toString(DEFAULT_PACKET_SIZE)));
@@ -85,7 +90,7 @@ public class StatsDStatLogger implements StatLogger {
       for(Stat s : stats) {
         if(s.type() != StatType.OBJECT && !s.isNull()) {
           StringBuilder statStr = new StringBuilder()
-                  .append(id.display()).append(".").append(s.name());
+                  .append(namePrefix).append(id.display()).append(".").append(s.name());
           switch(s.type()) {
             case DOUBLE:
               statStr.append(s.doubleValue());
