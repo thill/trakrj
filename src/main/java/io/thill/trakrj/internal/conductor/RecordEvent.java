@@ -34,6 +34,7 @@ public class RecordEvent implements Record {
   private Tracker tracker;
   private Interval logInterval;
   private Interval resetInterval;
+  private long timestamp;
 
   private long keyLong;
   private double keyDouble;
@@ -51,6 +52,7 @@ public class RecordEvent implements Record {
     type = null;
     id = null;
     tracker = null;
+    timestamp = 0;
     keyLong = 0;
     keyDouble = Double.NaN;
     keyObject = null;
@@ -105,6 +107,14 @@ public class RecordEvent implements Record {
 
   public void setResetInterval(Interval resetInterval) {
     this.resetInterval = resetInterval;
+  }
+
+  public long getTimestamp() {
+    return timestamp;
+  }
+
+  public void setTimestamp(long timestamp) {
+    this.timestamp = timestamp;
   }
 
   @Override

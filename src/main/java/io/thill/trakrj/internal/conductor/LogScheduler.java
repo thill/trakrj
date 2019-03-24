@@ -72,9 +72,9 @@ public class LogScheduler implements AutoCloseable {
               // check if this Tracker's reset time has also surpassed
               long timeToReset = tc.nextResetDispatch - now;
               if(timeToReset <= 0) {
-                dispatch(tc.id, Type.LOG_AND_RESET);
+                dispatch(tc.id, Type.LOG_AND_RESET, tc.nextLogDispatch);
               } else {
-                dispatch(tc.id, Type.LOG);
+                dispatch(tc.id, Type.LOG, tc.nextLogDispatch);
               }
               scheduleNextDispatch(tc);
             }
@@ -92,10 +92,11 @@ public class LogScheduler implements AutoCloseable {
     }
   }
 
-  private void dispatch(TrackerId id, Type type) {
+  private void dispatch(TrackerId id, Type type, long timestamp) {
     RecordEvent event = ringBuffer.claim();
     event.setType(type);
     event.setId(id);
+    event.setTimestamp(timestamp);
     ringBuffer.commit(event);
   }
 

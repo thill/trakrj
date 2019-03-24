@@ -116,7 +116,7 @@ public class RecordEventHandler implements AutoCloseable {
     logMissedEvents();
     Tracker tracker = trackers.get(event.getId().uid());
     if(tracker != null) {
-      statLogger.log(event.getId(), tracker);
+      statLogger.log(event.getId(), tracker, event.getTimestamp());
     }
   }
 
@@ -124,7 +124,7 @@ public class RecordEventHandler implements AutoCloseable {
     logMissedEvents();
     Tracker tracker = trackers.get(event.getId().uid());
     if(tracker != null) {
-      statLogger.log(event.getId(), tracker);
+      statLogger.log(event.getId(), tracker, event.getTimestamp());
       tracker.reset();
     }
   }
