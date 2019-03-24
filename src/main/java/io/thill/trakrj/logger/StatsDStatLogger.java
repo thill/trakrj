@@ -90,7 +90,7 @@ public class StatsDStatLogger implements StatLogger {
       for(Stat s : stats) {
         if(s.type() != StatType.OBJECT && !s.isNull()) {
           StringBuilder statStr = new StringBuilder()
-                  .append(namePrefix).append(id.display()).append(".").append(s.name());
+                  .append(namePrefix).append(id.display()).append(".").append(s.name()).append("=");
           switch(s.type()) {
             case DOUBLE:
               statStr.append(s.doubleValue());
@@ -104,6 +104,7 @@ public class StatsDStatLogger implements StatLogger {
           // flush packet if length would exceed packetSize
           if(packet.length() > 0 && packet.length() + statStr.length() + 1 > packetSize) {
             send(packet.toString());
+            statStr.setLength(0);
             packet.setLength(0);
           }
 
@@ -113,13 +114,13 @@ public class StatsDStatLogger implements StatLogger {
           }
 
           // append stat to packet
-          packet.append(statStr.length());
+          packet.append(statStr);
         }
+      }
 
-        // send remaining packet
-        if(packet.length() > 0) {
-          send(packet.toString());
-        }
+      // send remaining packet
+      if(packet.length() > 0) {
+        send(packet.toString());
       }
     } catch(IOException e) {
       Exceptions.logError("Could not send StatsD packet", e);
