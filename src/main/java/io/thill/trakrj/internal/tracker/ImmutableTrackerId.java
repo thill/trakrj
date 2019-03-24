@@ -9,12 +9,32 @@
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
  * CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
-package io.thill.trakrj.function;
+package io.thill.trakrj.internal.tracker;
+
+import io.thill.trakrj.TrackerId;
 
 /**
+ * Internal class. Public methods may change or be removed without warning.
+ *
  * @author Eric Thill
  */
-@FunctionalInterface
-public interface IntDoubleConsumer {
-  void accept(int v1, double v2);
+public class ImmutableTrackerId implements TrackerId {
+
+  private final int uid;
+  private final String display;
+
+  public ImmutableTrackerId(int uid, String display) {
+    this.uid = uid;
+    this.display = display;
+  }
+
+  @Override
+  public int uid() {
+    return uid;
+  }
+
+  @Override
+  public String display() {
+    return display;
+  }
 }
