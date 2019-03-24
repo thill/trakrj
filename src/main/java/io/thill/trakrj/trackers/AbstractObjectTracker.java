@@ -23,7 +23,7 @@ import java.util.List;
  */
 public abstract class AbstractObjectTracker implements Tracker {
 
-  private static final String STAT_NAME = "value";
+  private static final String STAT_NAME = "val";
 
   private final SettableStat stat;
   private final List<Stat> stats;

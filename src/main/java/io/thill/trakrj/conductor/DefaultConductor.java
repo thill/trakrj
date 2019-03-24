@@ -32,6 +32,7 @@ import java.util.Map;
  */
 public class DefaultConductor implements Conductor {
 
+  private static final String DISPLAY_NAME_REGEX = "[0-9A-Za-z_]+";
   private static final String CFGKEY_RINGBUFFER_SIZE = "ringbuffer.size";
   private static final String DEFAULT_RINGBUFFER_SIZE = "4096";
 
@@ -53,6 +54,10 @@ public class DefaultConductor implements Conductor {
 
   @Override
   public void addTracker(TrackerId id, Tracker tracker, Interval logInterval, Interval resetInterval) {
+    if(!id.display().matches(DISPLAY_NAME_REGEX)) {
+      throw new IllegalArgumentException("Illegal display name '" + id.display() + "' does not match " + DISPLAY_NAME_REGEX);
+    }
+
     RecordEvent event = ringBuffer.claim();
     event.setType(Type.ADD_TRACKER);
     event.setId(id);

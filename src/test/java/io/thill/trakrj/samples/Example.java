@@ -46,8 +46,8 @@ public class Example {
   }
 
   private enum ID implements TrackerId {
-    SEC5(1, "5s Histogram"),
-    MIN(2, "1m Histogram"),
+    SEC5(1, "Histogram_5s"),
+    MIN(2, "Histogram_1m"),
     LAST(3, "Last"),
     AGG(4, "Aggregated");
 

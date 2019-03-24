@@ -28,8 +28,8 @@ public interface TrackerId {
   int uid();
 
   /**
-   * The Display Name for the {@link Tracker}. This will be used by the underlying {@link io.thill.trakrj.logger.StatLogger} to provide human readable
-   * statistics.
+   * The Unique Display Name for the {@link Tracker}. This will be used by the underlying {@link io.thill.trakrj.logger.StatLogger} to provide human readable
+   * statistics. Valid characters are 0-9, A-Z, a-z, _
    *
    * @return The Display Name
    */

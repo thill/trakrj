@@ -9,7 +9,7 @@ A simple API provides the ability to dispatch statistics to underlying trackers.
 Run using `-Dtrakrj.enabled`:
 ```
 // Create an ID for our Histogram Tracker
-TrackerId id = TrackerId.generate("My Value");
+TrackerId id = TrackerId.generate("My_Value");
 
 // Register our Histogram Tracker with the TrakrJ subsystem. Log every 5 seconds, Never Reset.
 TrakrJ.stats().register(id, new LastLongTracker(), Intervals.seconds(5), Intervals.never());
@@ -23,15 +23,15 @@ Thread.sleep(TimeUnit.HOURS.toMillis(1));
 
 Output:
 ```
-Sun Jan 27 15:32:05 CST 2019 - TrakrJ - My Value - 123
-Sun Jan 27 15:32:10 CST 2019 - TrakrJ - My Value - 123
+Sun Jan 27 15:32:05 CST 2019 - TrakrJ - My_Value - 123
+Sun Jan 27 15:32:10 CST 2019 - TrakrJ - My_Value - 123
 ```
 
 #### Histogram Quick Start
 Run using `-Dtrakrj.enabled`:
 ```
 // Create an ID for our Histogram Tracker
-TrackerId id = TrackerId.generate("My Histogram");
+TrackerId id = TrackerId.generate("My_Histogram");
 
 // Register our Histogram Tracker with the TrakrJ subsystem. Log every 5 seconds, Reset every 1 minute.
 TrakrJ.stats().register(id, new HistogramTracker(), Intervals.seconds(5), Intervals.minutes(1));
@@ -46,9 +46,9 @@ while(true) {
 
 Output:
 ```
-Sun Jan 27 12:58:30 CST 2019 - TrakrJ - My Histogram - [ 0=14 50=422 90=843 99=992 99.9=992 100=992 ] count=32
-Sun Jan 27 12:58:35 CST 2019 - TrakrJ - My Histogram - [ 0=36 50=560 90=906 99=997 99.9=997 100=997 ] count=94
-Sun Jan 27 12:58:40 CST 2019 - TrakrJ - My Histogram - [ 0=16 50=505 90=901 99=984 99.9=997 100=997 ] count=189
+Sun Jan 27 12:58:30 CST 2019 - TrakrJ - My_Histogram - [ 0=14 50=422 90=843 99=992 99.9=992 100=992 ] count=32
+Sun Jan 27 12:58:35 CST 2019 - TrakrJ - My_Histogram - [ 0=36 50=560 90=906 99=997 99.9=997 100=997 ] count=94
+Sun Jan 27 12:58:40 CST 2019 - TrakrJ - My_Histogram - [ 0=16 50=505 90=901 99=984 99.9=997 100=997 ] count=189
 ```
 
 ## Stats API
@@ -203,7 +203,7 @@ This library can be used without the TrakrJ singleton. Reasons you may consider 
 Here's an example using `Slf4jStatLogger`:
 ```
 Stats stats = Stats.create(new Slf4jStatLogger()));
-stats.register(ID.SEC5, new HistogramTracker(), Intervals.seconds(5), Intervals.seconds(5));
+stats.register(trackerId, new HistogramTracker(), Intervals.seconds(5), Intervals.seconds(5));
 ``` 
 
 Here's an example using `MultiStatLogger`:
@@ -212,5 +212,5 @@ Stats stats = Stats.create(new MultiStatLogger(
                   new Slf4jStatLogger(), 
                   new StdoutStatLogger()
               ));
-stats.register(ID.SEC5, new HistogramTracker(), Intervals.seconds(5), Intervals.seconds(5));
+stats.register(trackerId, new HistogramTracker(), Intervals.seconds(5), Intervals.seconds(5));
 ``` 
