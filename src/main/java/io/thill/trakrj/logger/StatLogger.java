@@ -27,9 +27,20 @@ import java.util.Map;
  * @author Eric Thill
  */
 public interface StatLogger {
+  /**
+   * Configure the logger
+   *
+   * @param config The configuration
+   */
   void configure(Map<String, String> config);
 
-  void log(TrackerId id, Tracker tracker);
-
+  /**
+   * Log the given tracker
+   *
+   * @param id        The id of the tracker
+   * @param tracker   The tracker to log
+   * @param timestamp The scheduled log timestamp
+   */
+  void log(TrackerId id, Tracker tracker, long timestamp);
 
 }

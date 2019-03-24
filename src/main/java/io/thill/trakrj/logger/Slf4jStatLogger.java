@@ -46,7 +46,7 @@ public class Slf4jStatLogger implements StatLogger {
   }
 
   @Override
-  public void log(TrackerId id, Tracker tracker) {
+  public void log(TrackerId id, Tracker tracker, long timestamp) {
     logger.info("{} - {}", id.display(), tracker.toString());
   }
 

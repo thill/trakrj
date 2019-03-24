@@ -44,8 +44,8 @@ public class StdoutStatLogger implements StatLogger {
   }
 
   @Override
-  public void log(TrackerId id, Tracker tracker) {
-    System.out.println(new Date() + " - " + loggerName + " - " + id.display() + " - " + tracker.toString());
+  public void log(TrackerId id, Tracker tracker, long timestamp) {
+    System.out.println(new Date(timestamp) + " - " + loggerName + " - " + id.display() + " - " + tracker.toString());
   }
 
 }

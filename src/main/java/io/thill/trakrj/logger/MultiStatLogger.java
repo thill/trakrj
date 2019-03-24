@@ -60,9 +60,9 @@ public class MultiStatLogger implements StatLogger {
   }
 
   @Override
-  public void log(TrackerId id, Tracker tracker) {
+  public void log(TrackerId id, Tracker tracker, long timestamp) {
     for(int i = 0; i < loggers.length; i++) {
-      loggers[i].log(id, tracker);
+      loggers[i].log(id, tracker, timestamp);
     }
   }
 
