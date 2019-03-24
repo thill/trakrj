@@ -90,13 +90,25 @@ You may use a custom config location by setting the following property:
 
 
 ## Logging
+### Provided Implementations
 The following implementations are provided:
 ```
 logger.impl=stderr
 logger.impl=stdout
 logger.impl=slf4j
+logger.impl=multi
 ```
 You may create a custom logger by implementing `io.thill.trakrj.logger.StatLogger` and setting the fully qualified path for `logger.impl`
+
+### Using Multiple StatLoggers
+You may log to multiple stat loggers using the `MultiStatLogger`, which will fan-out logger callbacks to multiple logger implementations. Here's a config example:
+```
+logger.impl=multi
+logger.slf4j.impl=slf4j
+logger.custom.impl=my.custom.StatLoggerImpl
+logger.custom.mykey1=hello
+logger.custom.mykey2=world
+```
 
 
 ## Trackers
@@ -180,4 +192,25 @@ private enum ID implements TrackerId {
     return display;
   }
 }
+``` 
+
+## Instantiating Your Own Instances
+This library can be used without the TrakrJ singleton. Reasons you may consider this:
+- You want to use different `StatLogger` implementations in different parts of your codebase
+- You don't want to manage a `trakrj.properties` config
+- You consider singleton an anti-pattern
+
+Here's an example using `Slf4jStatLogger`:
+```
+Stats stats = Stats.create(new Slf4jStatLogger()));
+stats.register(ID.SEC5, new HistogramTracker(), Intervals.seconds(5), Intervals.seconds(5));
+``` 
+
+Here's an example using `MultiStatLogger`:
+```
+Stats stats = Stats.create(new MultiStatLogger(
+                  new Slf4jStatLogger(), 
+                  new StdoutStatLogger()
+              ));
+stats.register(ID.SEC5, new HistogramTracker(), Intervals.seconds(5), Intervals.seconds(5));
 ``` 
