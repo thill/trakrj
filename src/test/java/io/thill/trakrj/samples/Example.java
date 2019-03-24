@@ -31,6 +31,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class Example {
   public static void main(String[] args) throws Exception {
+    System.setProperty("trakrj.enabled", "true");
+
     TrakrJ.stats().register(ID.SEC5, new HistogramTracker(), Intervals.seconds(5), Intervals.seconds(5));
     TrakrJ.stats().register(ID.MIN, new HistogramTracker(), Intervals.seconds(5), Intervals.minutes(1));
     TrakrJ.stats().register(ID.AGG, new AggregateLongTracker(), Intervals.seconds(5), Intervals.minutes(1));

@@ -29,7 +29,15 @@ import static io.thill.trakrj.internal.load.Config.*;
  */
 public class Slf4jStatLogger implements StatLogger {
 
-  private Logger logger = LoggerFactory.getLogger(DEFAULT_LOGGER_NAME);
+  private Logger logger;
+
+  public Slf4jStatLogger() {
+    this(DEFAULT_LOGGER_NAME);
+  }
+
+  public Slf4jStatLogger(String loggerName) {
+    logger = LoggerFactory.getLogger(loggerName);
+  }
 
   @Override
   public void configure(Map<String, String> config) {

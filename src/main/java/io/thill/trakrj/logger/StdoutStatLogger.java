@@ -28,7 +28,15 @@ import static io.thill.trakrj.internal.load.Config.*;
  */
 public class StdoutStatLogger implements StatLogger {
 
-  private String loggerName = DEFAULT_LOGGER_NAME;
+  private String loggerName;
+
+  public StdoutStatLogger() {
+    this(DEFAULT_LOGGER_NAME);
+  }
+
+  public StdoutStatLogger(String loggerName) {
+    this.loggerName = loggerName;
+  }
 
   @Override
   public void configure(Map<String, String> config) {

@@ -18,6 +18,7 @@ package io.thill.trakrj.logger;
 import io.thill.trakrj.Tracker;
 import io.thill.trakrj.TrackerId;
 
+import javax.xml.bind.annotation.XmlType.DEFAULT;
 import java.util.Date;
 import java.util.Map;
 
@@ -28,7 +29,15 @@ import static io.thill.trakrj.internal.load.Config.*;
  */
 public class StderrStatLogger implements StatLogger {
 
-  private String loggerName = DEFAULT_LOGGER_NAME;
+  private String loggerName;
+
+  public StderrStatLogger() {
+    this(DEFAULT_LOGGER_NAME);
+  }
+
+  public StderrStatLogger(String loggerName) {
+    this.loggerName = loggerName;
+  }
 
   @Override
   public void configure(Map<String, String> config) {

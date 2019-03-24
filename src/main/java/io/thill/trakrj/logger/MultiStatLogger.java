@@ -13,48 +13,57 @@
  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.thill.trakrj;
+package io.thill.trakrj.logger;
 
-import io.thill.trakrj.conductor.Conductor;
-import io.thill.trakrj.conductor.DisabledConductor;
+import io.thill.trakrj.Tracker;
+import io.thill.trakrj.TrackerId;
 import io.thill.trakrj.internal.exception.Exceptions;
 import io.thill.trakrj.internal.load.Config;
 import io.thill.trakrj.internal.load.Instantiate;
-import io.thill.trakrj.logger.StatLogger;
 
-import java.util.Map;
+import java.util.*;
 
 /**
- * The API entry point for TrakrJ. This class takes care of all static initialization of the {@link Stats} singleton from trakrj.properties. If
- * trakrj.properties is not found, all calls to the underlying conductor will return immediately without executing any logic.
- *
  * @author Eric Thill
  */
-public class TrakrJ {
+public class MultiStatLogger implements StatLogger {
 
-  private static final Stats STATS;
+  private StatLogger[] loggers;
 
-  static {
-    Conductor conductor;
-    try {
-      Map<String, String> config = Config.loadConfig();
-      Config.tryPrintConfig(config);
-      StatLogger logger = Instantiate.instantiateLoggerFromSysConfig(config);
-      conductor = Instantiate.instantiateConductorFromSysConfig(config, logger);
-    } catch(Throwable t) {
-      Exceptions.logError("Could not instantiate trackrj. All calls to " + Stats.class.getSimpleName() + " will no-op.\n", t);
-      conductor = new DisabledConductor();
-    }
-    STATS = new Stats(conductor);
+  public MultiStatLogger() {
+    loggers = new StatLogger[0];
   }
 
-  /**
-   * Get the default stats instance.
-   *
-   * @return The stats instance
-   */
-  public static Stats stats() {
-    return STATS;
+  public MultiStatLogger(StatLogger... loggers) {
+    this.loggers = loggers;
+  }
+
+  @Override
+  public void configure(Map<String, String> config) {
+    if(config == null || config.isEmpty()) {
+      return;
+    }
+    final Set<String> statLoggerNames = new LinkedHashSet<>();
+    for(String key : config.keySet()) {
+      statLoggerNames.add(key.split("\\.")[0]);
+    }
+    final List<StatLogger> loggers = new ArrayList<>();
+    for(String name : statLoggerNames) {
+      Map<String, String> sub = Config.subConfig(config, name + ".", Collections.emptyList());
+      try {
+        loggers.add(Instantiate.instantiateLogger(sub));
+      } catch(Throwable t) {
+        Exceptions.logError("Could not instantiate logger '" + name + "'", t);
+      }
+    }
+    this.loggers = loggers.toArray(new StatLogger[loggers.size()]);
+  }
+
+  @Override
+  public void log(TrackerId id, Tracker tracker) {
+    for(int i = 0; i < loggers.length; i++) {
+      loggers[i].log(id, tracker);
+    }
   }
 
 }

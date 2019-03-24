@@ -58,6 +58,7 @@ public class Config {
   public static final String LOGGER_IMPL_SLF4J = "slf4j";
   public static final String LOGGER_IMPL_STDOUT = "stdout";
   public static final String LOGGER_IMPL_STDERR = "stderr";
+  public static final String LOGGER_IMPL_MULTI = "multi";
 
   public static final String CFGKEY_LOGGER_NAME = "name";
   public static final String DEFAULT_LOGGER_NAME = "TrakrJ";
