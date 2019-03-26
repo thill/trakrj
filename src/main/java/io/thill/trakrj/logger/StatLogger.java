@@ -22,7 +22,7 @@ import java.util.Map;
  *
  * @author Eric Thill
  */
-public interface StatLogger {
+public interface StatLogger extends AutoCloseable {
   /**
    * Configure the logger
    *
@@ -39,4 +39,8 @@ public interface StatLogger {
    */
   void log(TrackerId id, Tracker tracker, long timestamp);
 
+  /**
+   * Close without errors
+   */
+  void close();
 }

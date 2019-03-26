@@ -62,4 +62,14 @@ public class MultiStatLogger implements StatLogger {
     }
   }
 
+  @Override
+  public void close() {
+    for(int i = 0; i < loggers.length; i++) {
+      try {
+        loggers[i].close();
+      } catch(Throwable t) {
+        Exceptions.logError("Error closing " + loggers[i].getClass().getSimpleName(), t);
+      }
+    }
+  }
 }

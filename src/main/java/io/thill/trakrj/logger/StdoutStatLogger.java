@@ -44,4 +44,8 @@ public class StdoutStatLogger implements StatLogger {
     System.out.println(new Date(timestamp) + " - " + loggerName + " - " + id.display() + " - " + tracker.toString());
   }
 
+  @Override
+  public void close() {
+
+  }
 }

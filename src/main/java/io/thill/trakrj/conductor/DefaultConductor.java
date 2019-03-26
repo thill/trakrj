@@ -36,8 +36,6 @@ public class DefaultConductor implements Conductor {
   private static final String CFGKEY_RINGBUFFER_SIZE = "ringbuffer.size";
   private static final String DEFAULT_RINGBUFFER_SIZE = "4096";
 
-  private final Logger logger = LoggerFactory.getLogger(getClass());
-
   private RecordEventHandler eventHandler;
   private RecordEventRingBuffer ringBuffer;
 
@@ -48,8 +46,6 @@ public class DefaultConductor implements Conductor {
 
     eventHandler = new RecordEventHandler(ringBuffer, logger);
     eventHandler.start();
-
-    this.logger.debug("Started");
   }
 
   @Override
@@ -95,8 +91,6 @@ public class DefaultConductor implements Conductor {
 
   @Override
   public void close() {
-    logger.debug("Closing...");
     eventHandler.close();
-    logger.debug("Closed");
   }
 }

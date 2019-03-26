@@ -32,20 +32,20 @@ public class StatsDExample {
     Stats stats = Stats.create(new StatsDStatLogger());
 
     // Receive and print StatsD data in separate thread
-    new Thread(() -> {
-      try {
-        final byte[] data = new byte[1024];
-        DatagramPacket receivePacket = new DatagramPacket(data, data.length);
-        DatagramSocket serverSocket = new DatagramSocket(8125);
-        while(true) {
-          serverSocket.receive(receivePacket);
-          System.out.println(new String(receivePacket.getData(), 0, receivePacket.getLength()));
-          System.out.println();
-        }
-      } catch(IOException e) {
-        e.printStackTrace();
-      }
-    }).start();
+//    new Thread(() -> {
+//      try {
+//        final byte[] data = new byte[1024];
+//        DatagramPacket receivePacket = new DatagramPacket(data, data.length);
+//        DatagramSocket serverSocket = new DatagramSocket(8125);
+//        while(true) {
+//          serverSocket.receive(receivePacket);
+//          System.out.println(new String(receivePacket.getData(), 0, receivePacket.getLength()));
+//          System.out.println();
+//        }
+//      } catch(IOException e) {
+//        e.printStackTrace();
+//      }
+//    }).start();
 
     // Register Stat Trackers
     stats.register(ID.SEC5, new HistogramTracker(), Intervals.seconds(5), Intervals.seconds(5));

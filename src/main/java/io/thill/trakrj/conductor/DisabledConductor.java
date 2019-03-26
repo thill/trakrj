@@ -25,9 +25,11 @@ import java.util.Map;
  */
 public class DisabledConductor implements Conductor {
 
+  private StatLogger logger;
+
   @Override
   public void configure(Map<String, String> config, StatLogger logger) {
-
+    this.logger = logger;
   }
 
   @Override
@@ -47,6 +49,7 @@ public class DisabledConductor implements Conductor {
 
   @Override
   public void close() {
-
+    logger.close();
   }
+
 }

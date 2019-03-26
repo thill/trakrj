@@ -46,4 +46,8 @@ public class Slf4jStatLogger implements StatLogger {
     logger.info("{} - {}", id.display(), tracker.toString());
   }
 
+  @Override
+  public void close() {
+
+  }
 }

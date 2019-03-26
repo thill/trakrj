@@ -45,4 +45,9 @@ public class StderrStatLogger implements StatLogger {
     System.err.println(new Date(timestamp) + " - " + loggerName + " - " + id.display() + " - " + tracker.toString());
   }
 
+  @Override
+  public void close() {
+
+  }
+  
 }

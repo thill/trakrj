@@ -60,6 +60,7 @@ public class RecordEventHandler implements AutoCloseable {
     scheduler.close();
     thread.interrupt();
     shutdownCompleteLatch.await();
+    statLogger.close();
   }
 
   private void runLoop() {

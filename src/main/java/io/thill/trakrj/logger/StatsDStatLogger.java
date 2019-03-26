@@ -18,12 +18,14 @@ import io.thill.trakrj.TrackerId;
 import io.thill.trakrj.internal.exception.Exceptions;
 
 import java.io.IOException;
+import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Eric Thill
@@ -39,13 +41,15 @@ public class StatsDStatLogger implements StatLogger {
   private static final int DEFAULT_PORT = 8125;
   private static final int DEFAULT_PACKET_SIZE = 500;
   private static final Charset UTF8 = Charset.forName("UTF-8");
+  private static final int ERROR_LOG_THROTTLE_MILLIS = 60000;
 
   private String namePrefix;
   private String hostname;
   private int port;
   private int packetSize;
-  private DatagramChannel socket;
-
+  private long throttledErrorsTimeout;
+  private long throttledErrorsCount;
+  private AtomicReference<DatagramChannel> socket = new AtomicReference<>();
 
   public StatsDStatLogger() {
     this(DEFAULT_NAME_PREFIX, DEFAULT_HOST, DEFAULT_PORT, DEFAULT_PACKET_SIZE);
@@ -72,8 +76,9 @@ public class StatsDStatLogger implements StatLogger {
   }
 
   private void connect() throws IOException {
-    socket = DatagramChannel.open();
+    DatagramChannel socket = DatagramChannel.open();
     socket.connect(new InetSocketAddress(hostname, port));
+    this.socket.set(socket);
   }
 
   @Override
@@ -81,7 +86,7 @@ public class StatsDStatLogger implements StatLogger {
     List<? extends Stat> stats = tracker.stats();
     try {
       // connect
-      if(socket == null) {
+      if(socket.get() == null) {
         connect();
       }
 
@@ -122,15 +127,43 @@ public class StatsDStatLogger implements StatLogger {
       if(packet.length() > 0) {
         send(packet.toString());
       }
-    } catch(IOException e) {
-      Exceptions.logError("Could not send StatsD packet", e);
-      socket = null;
+    } catch(Throwable t) {
+      throttleLogError(t);
+      closeSocket();
+    }
+  }
+
+  private void throttleLogError(Throwable t) {
+    if(System.currentTimeMillis() >= throttledErrorsTimeout) {
+      Exceptions.logError("Could not send StatsD packet (throttledErrors=" + throttledErrorsCount + ")", t);
+      throttledErrorsTimeout = System.currentTimeMillis() + ERROR_LOG_THROTTLE_MILLIS;
+      throttledErrorsCount = 0;
+    } else {
+      throttledErrorsCount++;
     }
   }
 
   private void send(String str) throws IOException {
-    final byte[] sendData = str.getBytes(UTF8);
-    socket.write(ByteBuffer.wrap(sendData));
+    DatagramChannel socket = this.socket.get();
+    if(socket != null) {
+      final byte[] sendData = str.getBytes(UTF8);
+      socket.write(ByteBuffer.wrap(sendData));
+    }
   }
 
+  @Override
+  public void close() {
+    closeSocket();
+  }
+
+  private void closeSocket() {
+    DatagramChannel socket;
+    if((socket = this.socket.getAndSet(null)) != null) {
+      try {
+        socket.close();
+      } catch(Throwable t) {
+        // ignore
+      }
+    }
+  }
 }
