@@ -88,6 +88,11 @@ You may use a custom config location by setting the following property:
 -Dtrakrj.config=path/to/my.properties
 ``` 
 
+#### Method 3: Code
+You may instantiate a Stats instance yourself:
+```
+Stats stats = Stats.create(new Slf4jStatLogger()));
+```
 
 ## Logging
 ### Provided Implementations
