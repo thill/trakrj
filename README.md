@@ -5,17 +5,45 @@ A simple API provides the ability to dispatch statistics to underlying trackers.
 
 ## Quick Start
 
-#### Last Value Quick Start
-Run using `-Dtrakrj.enabled`:
+#### Histogram Quick Start
 ```
+// Create a stats instance
+Stats stats = Stats.create(new Slf4jStatLogger()));
+
+// Create an ID for our Histogram Tracker
+TrackerId id = TrackerId.generate("My_Histogram");
+
+// Register our Histogram Tracker with the TrakrJ subsystem. Log every 5 seconds, Reset every 1 minute.
+stats.register(id, new HistogramTracker(), Intervals.seconds(5), Intervals.minutes(1));
+
+// Send random numbers to TrakrJ, and watch the output
+Random r = new Random();
+while(true) {
+  Thread.sleep(50);
+  stats.record(id, r.nextInt(1000));
+}
+```
+
+Output:
+```
+Sun Jan 27 12:58:30 CST 2019 - TrakrJ - My_Histogram - [ 0=14 50=422 90=843 99=992 99.9=992 100=992 ] count=32
+Sun Jan 27 12:58:35 CST 2019 - TrakrJ - My_Histogram - [ 0=36 50=560 90=906 99=997 99.9=997 100=997 ] count=94
+Sun Jan 27 12:58:40 CST 2019 - TrakrJ - My_Histogram - [ 0=16 50=505 90=901 99=984 99.9=997 100=997 ] count=189
+```
+
+#### Last Value Quick Start
+```
+// Create a stats instance
+Stats stats = Stats.create(new Slf4jStatLogger()));
+
 // Create an ID for our Histogram Tracker
 TrackerId id = TrackerId.generate("My_Value");
 
 // Register our Histogram Tracker with the TrakrJ subsystem. Log every 5 seconds, Never Reset.
-TrakrJ.stats().register(id, new LastLongTracker(), Intervals.seconds(5), Intervals.never());
+stats.register(id, new LastLongTracker(), Intervals.seconds(5), Intervals.never());
 
 // Send a value to TrakrJ, and watch the output
-TrakrJ.stats().record(id, 123L);
+stats.record(id, 123L);
 
 // Keep the JVM from exiting while you watch
 Thread.sleep(TimeUnit.HOURS.toMillis(1));
@@ -27,54 +55,46 @@ Sun Jan 27 15:32:05 CST 2019 - TrakrJ - My_Value - 123
 Sun Jan 27 15:32:10 CST 2019 - TrakrJ - My_Value - 123
 ```
 
-#### Histogram Quick Start
-Run using `-Dtrakrj.enabled`:
-```
-// Create an ID for our Histogram Tracker
-TrackerId id = TrackerId.generate("My_Histogram");
-
-// Register our Histogram Tracker with the TrakrJ subsystem. Log every 5 seconds, Reset every 1 minute.
-TrakrJ.stats().register(id, new HistogramTracker(), Intervals.seconds(5), Intervals.minutes(1));
-
-// Send random numbers to TrakrJ, and watch the output
-Random r = new Random();
-while(true) {
-  Thread.sleep(50);
-  TrakrJ.stats().record(id, r.nextInt(1000));
-}
-```
-
-Output:
-```
-Sun Jan 27 12:58:30 CST 2019 - TrakrJ - My_Histogram - [ 0=14 50=422 90=843 99=992 99.9=992 100=992 ] count=32
-Sun Jan 27 12:58:35 CST 2019 - TrakrJ - My_Histogram - [ 0=36 50=560 90=906 99=997 99.9=997 100=997 ] count=94
-Sun Jan 27 12:58:40 CST 2019 - TrakrJ - My_Histogram - [ 0=16 50=505 90=901 99=984 99.9=997 100=997 ] count=189
-```
 
 ## Stats API
+
+#### Creating a Stats Instance
+```
+Stats stats = Stats.create(new Slf4jStatLogger()));
+```
+
 #### Register a Tracker
 ```
-TrakrJ.stats().register(TrackerId id, Tracker tracker, Interval logInterval, Interval resetInterval)
+stats.register(TrackerId id, Tracker tracker, Interval logInterval, Interval resetInterval)
 ```
 
 #### Reset a Tracker On-Demand
 ```
-TrakrJ.stats().reset(TrackerId id)
+stats.reset(TrackerId id)
 ```
 
 #### Record a Statistic
- ```
- public static void record(TrackerId id, double/long/Object value)
- public static void record(TrackerId id, double/long/Object key, double/long/Object value)
- ```
+```
+stats.record(TrackerId id, double/long/Object value)
+stats.record(TrackerId id, double/long/Object key, double/long/Object value)
+```
 
 
 ## Enabling TrakrJ
 
-#### Method 1: System Property
-Setting `-Dtrakrj.enabled` or `-Dtrakrj.enabled=true` will enable TrakrJ with sensible defaults that will log to stderr
+#### Method 1: Code
+You may instantiate a Stats instance yourself:
+```
+Stats stats = Stats.create(new Slf4jStatLogger()));
+```
 
-#### Method 2: trakrj.properties
+#### Method 2: System Property
+Setting `-Dtrakrj.enabled` or `-Dtrakrj.enabled=true` will enable TrakrJ with sensible defaults that will log to stderr
+```
+Stats stats = TrakrJ.stats();
+```
+
+#### Method 3: trakrj.properties
 Add trakrj.properties to the classpath or working directory. The following sample is identical to defaults used in an empty config. 
 ```
 conductor.impl=default          # default, disabled, or a fully-qualified custom Conductor class
@@ -88,11 +108,7 @@ You may use a custom config location by setting the following property:
 -Dtrakrj.config=path/to/my.properties
 ``` 
 
-#### Method 3: Code
-You may instantiate a Stats instance yourself:
-```
-Stats stats = Stats.create(new Slf4jStatLogger()));
-```
+
 
 ## Logging
 ### Provided Implementations
