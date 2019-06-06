@@ -2,8 +2,15 @@
 #### A high-throughput, low-latency, statistic tracking framework for Java applications. 
 A simple API provides the ability to dispatch statistics to underlying trackers. These trackers aggregate this information and their state is periodically logged in a human-readable format. The goal of this project is to do this in such a manner that minimizes the observer effect while providing periodic, near-realtime information to the application's log. 
 
-
 ## Quick Start
+
+[Maven Artifact](https://mvnrepository.com/artifact/io.thill.trakrj/trakrj)
+```
+<dependency>
+  <groupId>io.thill.trakrj</groupId>
+  <artifactId>trakrj</artifactId>
+</dependency>
+```
 
 #### Histogram Quick Start
 ```
