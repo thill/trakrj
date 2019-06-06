@@ -8,7 +8,7 @@ A simple API provides the ability to dispatch statistics to underlying trackers.
 #### Histogram Quick Start
 ```
 // Create a stats instance
-Stats stats = Stats.create(new Slf4jStatLogger()));
+Stats stats = Stats.create(new StdoutStatLogger()));
 
 // Create an ID for our Histogram Tracker
 TrackerId id = TrackerId.generate("My_Histogram");
@@ -34,7 +34,7 @@ Sun Jan 27 12:58:40 CST 2019 - TrakrJ - My_Histogram - [ 0=16 50=505 90=901 99=9
 #### Last Value Quick Start
 ```
 // Create a stats instance
-Stats stats = Stats.create(new Slf4jStatLogger()));
+Stats stats = Stats.create(new StdoutStatLogger()));
 
 // Create an ID for our Histogram Tracker
 TrackerId id = TrackerId.generate("My_Value");
@@ -60,7 +60,7 @@ Sun Jan 27 15:32:10 CST 2019 - TrakrJ - My_Value - 123
 
 #### Creating a Stats Instance
 ```
-Stats stats = Stats.create(new Slf4jStatLogger()));
+Stats stats = Stats.create(new StdoutStatLogger()));
 ```
 
 #### Register a Tracker
@@ -85,7 +85,7 @@ stats.record(TrackerId id, double/long/Object key, double/long/Object value)
 #### Method 1: Code
 You may instantiate a Stats instance yourself:
 ```
-Stats stats = Stats.create(new Slf4jStatLogger()));
+Stats stats = Stats.create(new StdoutStatLogger()));
 ```
 
 #### Method 2: System Property
